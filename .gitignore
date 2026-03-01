@@ -1,0 +1,31 @@
+--- UNITY ---
+
+/[Ll]ibrary/
+/emp/
+/[Oo]bj/
+/[Tt]emp/
+/uilds/
+/[Ll]ogs/
+/[Mm]emoryCaptures/
+/[Uu]serettings/
+!/[Pp]rojectettings/ProjectVersion.txt
+sysinfo.txt
+*.apk
+*.unitypackage
+*.app
+
+--- ML-AGENTS & PYTHON ---
+
+results/
+summaries/
+venv/
+env/
+.conda/
+.python-version
+pycache/
+*.pyc
+
+--- SYSTEM ---
+
+.DS_Store
+Thumbs.db
