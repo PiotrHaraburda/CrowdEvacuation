@@ -1,5 +1,7 @@
 ﻿import os, json, glob
 import numpy as np
+import h5py
+import re
 
 RAW = "data_raw"
 OUT = "data_processed"
@@ -55,13 +57,12 @@ def process_narrow_door():
 
 
 def process_crossing():
-    if not HAS_H5PY:
-        return
-
     print("\n=== CROSSING 90 ===")
     cr_raw = os.path.join(RAW, "crossing")
     cr_out = os.path.join(OUT, "crossing")
     os.makedirs(cr_out, exist_ok=True)
+    
+    MIN_DISPLACEMENT = 0.5
 
     h5s = sorted(glob.glob(os.path.join(cr_raw, "crossing_90_d_*.h5")))
 
@@ -103,6 +104,15 @@ def process_crossing():
             m = ids == aid
             af, ax, ay = frames[m], xs[m], ys[m]
             s = np.argsort(af)
+
+            ax_s, ay_s = ax[s], ay[s]
+            sx, sy = ax_s[0], ay_s[0]
+            ex, ey = ax_s[-1], ay_s[-1]
+
+            # artifacts skip
+            if np.sqrt((ex - sx) ** 2 + (ey - sy) ** 2) < MIN_DISPLACEMENT:
+                continue
+            
             trajs.append({
                 "id": int(aid),
                 "x": ax[s].tolist(),
@@ -110,8 +120,9 @@ def process_crossing():
                 "frame": af[s].astype(int).tolist(),
                 "t": (af[s].astype(float) / 16.0).tolist(),
             })
-
-        fp = os.path.join(cr_out, f"D_{idx+1:03d}.json")
+            
+        num = re.search(r"_d_(\d+)", fname).group(1)
+        fp = os.path.join(cr_out, f"D_{int(num):03d}.json")
         with open(fp, "w") as fo:
             json.dump(trajs, fo)
         mb = os.path.getsize(fp) / (1024 * 1024)
