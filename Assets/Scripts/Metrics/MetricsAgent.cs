@@ -9,13 +9,32 @@ namespace Metrics
 
         private EvacuationMetricsLogger _logger;
         private Vector3 _prevPosition;
+        private float _prevSpeed;
         private bool _useOverrideSpeed;
 
+        public void RegisterLogger(EvacuationMetricsLogger logger)
+        {
+            _logger = logger;
+            _prevPosition = transform.position;
+            _prevSpeed = 0f;
+        }
 
         public void OverrideSpeed(float speed)
         {
+            _prevSpeed = speed;
             _useOverrideSpeed = true;
         }
+
+        public float GetInstantSpeed()
+        {
+            if (_useOverrideSpeed) return _prevSpeed;
+            var speed = Vector3.Distance(transform.position, _prevPosition) / Time.fixedDeltaTime;
+            _prevPosition = transform.position;
+            _prevSpeed = speed;
+            return speed;
+        }
+
+        public float GetLastSpeed() => _prevSpeed;
         
         public void MarkEvacuated()
         {

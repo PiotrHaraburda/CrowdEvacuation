@@ -50,6 +50,9 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Agents\TrajectoryData.cs" />
     <Compile Include="Assets\Scripts\Agents\GhostAgent.cs" />
+    <Compile Include="Assets\Scripts\SFM\SocialForceAgent.cs" />
+    <Compile Include="Assets\Scripts\SFM\SFMManager.cs" />
+    <Compile Include="Assets\Scripts\Metrics\MetricsData.cs" />
     <Compile Include="Assets\Scripts\Metrics\EvacuationMetricsLogger.cs" />
     <Compile Include="Assets\Scripts\Agents\GhostPlaybackManager.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
