@@ -27,9 +27,8 @@ namespace Metrics
 
         [Header("State")] 
         public int totalAgents;
-        
         [SerializeField] public int evacuatedAgents;
-        [SerializeField] private float elapsedTime;
+        [SerializeField] public float elapsedTime;
         [SerializeField] private float currentSpecificFlow;
         [SerializeField] private float currentExitDensity;
 
@@ -395,8 +394,8 @@ namespace Metrics
             var exitId = scenarioId switch
             {
                 "NarrowDoor" when pos.z < -1.1f => "Exit",
-                "Crossing90" when pos.z < -5.5f => "Exit_South",
-                "Crossing90" when pos.x < -6.0f => "Exit_West",
+                "Crossing90" when pos.z < -4.5f => "Exit_South",
+                "Crossing90" when pos.x < -5.0f => "Exit_West",
                 _ => null
             };
 
@@ -404,6 +403,15 @@ namespace Metrics
 
             ma.MarkEvacuated();
             OnAgentEvacuated(ma.agentId, exitId);
+        }
+
+        private void OnGUI()
+        {
+            GUILayout.BeginArea(new Rect(10, 10, 300, 120));
+            GUILayout.Box($"{modelType} Playback\n" +
+                          $"Agents: {totalAgents - evacuatedAgents}/{totalAgents}\n" +
+                          $"Time: {elapsedTime:F1}s");
+            GUILayout.EndArea();
         }
     }
 }

@@ -26,9 +26,6 @@ namespace SFM
         public float tau = 0.5f; // (Helbing & Molnar 1995)
         public float Awall = 2000f; // (Helbing, Farkas & Vicsek 2000)
         public float Bwall = 0.08f; // (Helbing, Farkas & Vicsek 2000)
-        
-        [Header("Anisotropy")]
-        public float lambda = 0.1f; // (Helbing & Johansson 2007)
 
         [Header("State")]
         [SerializeField] private Vector3 velocity;
@@ -43,9 +40,7 @@ namespace SFM
         {
             _rb = GetComponent<Rigidbody>();
             _rb.useGravity = false;
-            _rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
-            _rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            _rb.interpolation = RigidbodyInterpolation.Interpolate;
+            _rb.isKinematic = true;
         }
 
         private void OnEnable() => AllAgents.Add(this);
@@ -60,10 +55,17 @@ namespace SFM
 
             velocity += (drivingAccel + interactionForce / mass) * Time.fixedDeltaTime;
 
-            _rb.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
+            if (velocity.magnitude > desiredSpeed * 1.3f)
+                velocity = velocity.normalized * (desiredSpeed * 1.3f);
+            
+            transform.position += velocity * Time.fixedDeltaTime;
 
             if (velocity.sqrMagnitude > 0.01f)
                 transform.rotation = Quaternion.LookRotation(velocity);
+            
+            var ma = GetComponent<MetricsAgent>();
+            if (ma && !ma.IsEvacuated)
+                ma.CheckExit(transform.position);
         }
 
         private Vector3 ComputeDrivingForce()
@@ -100,6 +102,11 @@ namespace SFM
                     var dvt = Vector3.Dot(other.velocity - velocity, tij);
                     var friction = kappa * overlap * dvt * tij;
                     repulsive += pushing + friction;
+                    
+                    var ma = GetComponent<MetricsAgent>();
+                    var otherMa = other.GetComponent<MetricsAgent>();
+                    if (ma && otherMa)
+                        ma.ReportCollision("Agent", otherMa.agentId);
                 }
 
                 force += repulsive;
@@ -145,6 +152,10 @@ namespace SFM
                     var vt = Vector3.Dot(velocity, tio);
                     var friction = kappa * overlap * vt * tio;
                     repulsive += pushing + friction;
+                    
+                    var ma = GetComponent<MetricsAgent>();
+                    if (ma)
+                        ma.ReportCollision("Wall");
                 }
 
                 force += repulsive;

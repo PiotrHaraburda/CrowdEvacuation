@@ -23,7 +23,7 @@ namespace Agents
             IsFinished = false;
 
             if (posX.Length > 0)
-                transform.position = new Vector3(posX[0], 0.9f, posZ[0]);
+                transform.position = new Vector3(posX[0], 1f, posZ[0]);
             
             gameObject.SetActive(false);
         }
@@ -54,7 +54,7 @@ namespace Agents
             {
                 if (ma && !ma.IsEvacuated)
                 {
-                    var lastPos = new Vector3(posX[posX.Length - 1], 0.9f, posZ[posZ.Length - 1]);
+                    var lastPos = new Vector3(posX[posX.Length - 1], 1f, posZ[posZ.Length - 1]);
                     metricsLogger.CheckExitCrossing(ma, lastPos);
                 }
 
@@ -73,7 +73,7 @@ namespace Agents
             var x = Mathf.Lerp(posX[f0], posX[f1], alpha);
             var z = Mathf.Lerp(posZ[f0], posZ[f1], alpha);
 
-            var newPos = new Vector3(x, 0.9f, z);
+            var newPos = new Vector3(x, 1f, z);
 
             var delta = newPos - transform.position;
             if (delta.sqrMagnitude > 0.0001f)

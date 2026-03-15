@@ -17,24 +17,15 @@ namespace Agents
 
         [Header("Ghost prefab")]
         public GameObject ghostPrefab;
-
-        [Header("Speed")]
-        [Range(0.1f, 5f)]
-        public float playbackSpeed = 1f;
         
         [Header("Data offset (coordinate correction)")]
         public Vector2 dataOffset = Vector2.zero;
 
-        [Header("Info")]
-        [SerializeField] private int totalAgents;
-        [SerializeField] private int activeAgents;
-        [SerializeField] private float playbackTime;
-        [SerializeField] private float totalDuration;
-        [SerializeField] private string loadedFile = "";
-
+        [Header("References")]
+        public EvacuationMetricsLogger metricsLogger;
+        
         private readonly List<GhostAgent> _ghosts = new();
         private bool _isPlaying;
-        private float _startTime;
 
         private void Start()
         {
@@ -45,15 +36,12 @@ namespace Agents
         {
             if (!_isPlaying) return;
 
-            playbackTime = (Time.time - _startTime) * playbackSpeed;
-
             var active = 0;
             foreach (var ghost in _ghosts.Where(ghost => !ghost.IsFinished))
             {
-                ghost.Tick(playbackTime);
+                ghost.Tick(metricsLogger.elapsedTime);
                 active++;
             }
-            activeAgents = active;
 
             if (active != 0 || _ghosts.Count <= 0) return;
             _isPlaying = false;
@@ -70,7 +58,6 @@ namespace Agents
                 yield break;
             }
 
-            loadedFile = Path.GetFileName(filePath);
             Debug.Log($"[GhostManager] Loading: {filePath}");
 
             var json = File.ReadAllText(filePath);
@@ -132,12 +119,8 @@ namespace Agents
                     maxTime = Mathf.Max(maxTime, agentData.t[agentData.t.Length - 1]);
             }
 
-            totalAgents = _ghosts.Count;
-            totalDuration = maxTime;
-            _startTime = Time.time;
             _isPlaying = true;
 
-            Debug.Log($"[GhostManager] Loaded {totalAgents} agents, time: {totalDuration:F1}s");
             FindObjectOfType<EvacuationMetricsLogger>()?.RegisterAgents();
         }
 
@@ -158,54 +141,12 @@ namespace Agents
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _isPlaying = !_isPlaying;
-                if (_isPlaying)
-                {
-                    _startTime = Time.time - playbackTime / playbackSpeed;
-                }
-                Debug.Log(_isPlaying ? "[GhostManager] Resumed." : "[GhostManager] Paused.");
-            }
-
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                StopAllCoroutines();
-                StartCoroutine(LoadAndPlay());
-                Debug.Log("[GhostManager] Reset.");
-            }
-
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                var newSpeed = Mathf.Min(playbackSpeed + 0.1f, 5f);
-                _startTime = Time.time - playbackTime / newSpeed;
-                playbackSpeed = newSpeed;
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                var newSpeed = Mathf.Max(playbackSpeed - 0.1f, 0.1f);
-                _startTime = Time.time - playbackTime / newSpeed;
-                playbackSpeed = newSpeed;
-            }
             if (Input.GetKeyDown(KeyCode.E))
             {
                 var logger = FindObjectOfType<EvacuationMetricsLogger>();
-                Debug.Log($"Logger found: {logger}");
                 Debug.Log($"Evacuated: {logger?.evacuatedAgents} / {logger?.totalAgents}");
                 logger?.ForceExport();
             }
-        }
-
-        private void OnGUI()
-        {
-            GUILayout.BeginArea(new Rect(10, 10, 300, 120));
-            GUILayout.Box($"Ghost Playback\n" +
-                          $"File: {loadedFile}\n" +
-                          $"Agents: {activeAgents}/{totalAgents}\n" +
-                          $"Time: {playbackTime:F1}s / {totalDuration:F1}s\n" +
-                          $"Speed: {playbackSpeed:F1}x\n" +
-                          $"[Space]=Pause  [R]=Reset  [↑↓]=Speed");
-            GUILayout.EndArea();
         }
     }
 }

@@ -11,6 +11,8 @@ namespace Metrics
         private Vector3 _prevPosition;
         private float _prevSpeed;
         private bool _useOverrideSpeed;
+        
+        private static Collider[] _exitColliders;
 
         public void RegisterLogger(EvacuationMetricsLogger logger)
         {
@@ -41,26 +43,40 @@ namespace Metrics
             IsEvacuated = true;
         }
 
-        private void OnTriggerEnter(Collider other)
+        public void ReportCollision(string type, int otherId = -1)
         {
-            if (IsEvacuated) return;
-            if (!other.CompareTag("Exit")) return;
-            
-            IsEvacuated = true;
-            _logger?.OnAgentEvacuated(agentId, other.gameObject.name);
-            gameObject.SetActive(false);
+            if (IsEvacuated || !_logger)
+            {
+                return;
+            }
+            _logger.OnAgentCollision(agentId, type, otherId);
         }
 
-        private void OnCollisionEnter(Collision collision)
+        public void CheckExit(Vector3 pos)
         {
-            if (IsEvacuated || _logger == null) return;
-            if (collision.gameObject.CompareTag("Wall"))
+            if (IsEvacuated)
             {
-                _logger.OnAgentCollision(agentId, "Wall");
+                return;
             }
-            else if (collision.gameObject.TryGetComponent<MetricsAgent>(out var other))
+    
+            if (_exitColliders == null)
             {
-                _logger.OnAgentCollision(agentId, "Agent", other.agentId);
+                var exits = GameObject.FindGameObjectsWithTag("Exit");
+                _exitColliders = new Collider[exits.Length];
+                for (var i = 0; i < exits.Length; i++)
+                    _exitColliders[i] = exits[i].GetComponent<Collider>();
+            }
+
+            foreach (var col in _exitColliders)
+            {
+                if (!col || !col.bounds.Contains(pos))
+                {
+                    continue;
+                }
+                IsEvacuated = true;
+                _logger?.OnAgentEvacuated(agentId, col.gameObject.name);
+                gameObject.SetActive(false);
+                return;
             }
         }
     }

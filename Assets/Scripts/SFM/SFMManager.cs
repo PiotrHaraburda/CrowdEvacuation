@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Metrics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace SFM
 {
@@ -9,15 +13,10 @@ namespace SFM
         [Header("Prefab")]
         public GameObject sfmAgentPrefab;
 
-        [Header("Spawning")]
-        public Transform goal;
-        public int agentCount = 93;
-        public float spawnMinX = -3.0f;
-        public float spawnMaxX = 3.0f;
-        public float spawnMinZ = -0.8f;
-        public float spawnMaxZ = 1.6f;
+        [Header("References")]
+        public EvacuationMetricsLogger metricsLogger;
 
-        [Header("Agent Variation")]
+        [Header("Agent variation")]
         public float meanDesiredSpeed = 1.34f; // (Weidmann 1993)
         public float stdDesiredSpeed = 0.26f; // (Weidmann 1993)
         public float minDesiredSpeed = 0.5f;
@@ -25,100 +24,139 @@ namespace SFM
         public float meanRadius = 0.2f;
         public float stdRadius = 0.02f;
 
-        [Header("References")]
-        public EvacuationMetricsLogger metricsLogger;
-
-        [Header("State")]
-        [SerializeField] private int spawnedCount;
-        [SerializeField] private int evacuatedCount;
-        [SerializeField] private bool simulationRunning;
+        [Header("Spawn streams")]
+        public SpawnStream[] streams;
 
         private readonly List<SocialForceAgent> _agents = new();
         private int _nextId = 1;
 
-        private void Start()
+        [Serializable]
+        public class SpawnStream
         {
-            if (metricsLogger != null)
-                metricsLogger.totalAgents = agentCount;
-            
-            SpawnAll();
+            public string name;
+            public Transform goal;
+            public int agentCount;
+            public float spawnRate;
+            public float minX, maxX;
+            public float minZ, maxZ;
+            public float minSpawnDist = 0.41f;
         }
 
-        private void SpawnAll()
+        private void Start()
         {
-            for (var i = 0; i < agentCount; i++)
+            var totalAgents = streams.Sum(stream => stream.agentCount);
+
+            if (metricsLogger != null)
+                metricsLogger.totalAgents = totalAgents;
+
+            foreach (var stream in streams)
             {
-                Vector3 pos;
-                var attempts = 0;
-                do
-                {
-                    pos = new Vector3(
-                        Random.Range(spawnMinX, spawnMaxX),
-                        1f,
-                        Random.Range(spawnMinZ, spawnMaxZ));
-                    attempts++;
-                } while (!IsSpawnClear(pos, 0.45f) && attempts < 200);
-
-                if (attempts >= 200)
-                {
-                    Debug.LogWarning($"[SFM] Could not find clear spawn for agent {i}");
-                    continue;
-                }
-
-                SpawnAgent(pos);
+                if (stream.spawnRate <= 0f)
+                    SpawnAllInStream(stream);
+                else
+                    StartCoroutine(SpawnGradually(stream));
             }
+        }
 
-            simulationRunning = true;
+        private void SpawnAllInStream(SpawnStream stream)
+        {
+            for (var i = 0; i < stream.agentCount; i++)
+            {
+                var pos = FindSpawnPosition(stream);
+                if (pos.HasValue)
+                    SpawnAgent(pos.Value, stream.goal);
+            }
 
             if (metricsLogger != null)
                 metricsLogger.RegisterAgents();
+        }
+
+        private IEnumerator SpawnGradually(SpawnStream stream)
+        {
+            var delay = 1f / stream.spawnRate;
+            for (var i = 0; i < stream.agentCount; i++)
+            {
+                var pos = FindSpawnPosition(stream);
+                if (pos.HasValue)
+                    SpawnAgent(pos.Value, stream.goal);
+
+                yield return new WaitForSeconds(delay);
+            }
+        }
+        
+        private Vector3? FindSpawnPosition(SpawnStream stream)
+        {
+            var attempts = 0;
+            Vector3 pos;
+            do
+            {
+                pos = new Vector3(
+                    Random.Range(stream.minX, stream.maxX),
+                    1f,
+                    Random.Range(stream.minZ, stream.maxZ)
+                );
+                attempts++;
+            } while (!IsSpawnClear(pos, stream.minSpawnDist) && attempts < 200);
+
+            if (attempts >= 200)
+            {
+                Debug.LogWarning($"[SFM] Could not find clear spawn in stream '{stream.name}'");
+                return null;
+            }
+
+            return pos;
         }
         
         private bool IsSpawnClear(Vector3 pos, float minDist)
         {
             foreach (var agent in _agents)
             {
-                if (agent == null) continue;
+                if (!agent)
+                {
+                    continue;
+                }
                 if (Vector3.Distance(agent.transform.position, pos) < minDist)
                     return false;
             }
             return true;
         }
 
-        private void SpawnAgent(Vector3 pos)
+        private void SpawnAgent(Vector3 pos, Transform agentGoal)
         {
             var go = Instantiate(sfmAgentPrefab, pos, Quaternion.identity, transform);
             go.name = $"SFM_Agent_{_nextId}";
 
             var agent = go.GetComponent<SocialForceAgent>();
-            agent.goal = goal;
+            agent.goal = agentGoal;
             agent.desiredSpeed = SampleGaussian(meanDesiredSpeed, stdDesiredSpeed, minDesiredSpeed, maxDesiredSpeed);
             agent.radius = SampleGaussian(meanRadius, stdRadius, 0.15f, 0.25f);
 
             var capsule = go.GetComponent<CapsuleCollider>();
-            if (capsule != null) capsule.radius = agent.radius;
+            if (capsule)
+            {
+                capsule.radius = agent.radius;
+            }
 
             var ma = go.GetComponent<MetricsAgent>();
-            if (ma != null)
+            if (ma)
             {
                 ma.agentId = _nextId;
-                if (metricsLogger != null)
+                if (metricsLogger)
                     ma.RegisterLogger(metricsLogger);
             }
 
             _agents.Add(agent);
             _nextId++;
-            spawnedCount++;
+            metricsLogger.RegisterAgents();
         }
 
         private void Update()
         {
-            if (!simulationRunning) return;
-
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Debug.Log($"[SFM] Evacuated: {evacuatedCount} / {agentCount}");
-                metricsLogger?.ForceExport();
+                var logger = FindObjectOfType<EvacuationMetricsLogger>();
+                Debug.Log($"Evacuated: {logger?.evacuatedAgents} / {logger?.totalAgents}");
+                logger?.ForceExport();
             }
         }
 
