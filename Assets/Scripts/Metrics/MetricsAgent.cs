@@ -10,6 +10,7 @@ namespace Metrics
         private EvacuationMetricsLogger _logger;
         private Vector3 _prevPosition;
         private float _prevSpeed;
+        private float _prevSpeedTime;
         private bool _useOverrideSpeed;
         
         private static Collider[] _exitColliders;
@@ -19,6 +20,7 @@ namespace Metrics
             _logger = logger;
             _prevPosition = transform.position;
             _prevSpeed = 0f;
+            _prevSpeedTime = Time.time;
         }
 
         public void OverrideSpeed(float speed)
@@ -29,9 +31,20 @@ namespace Metrics
 
         public float GetInstantSpeed()
         {
-            if (_useOverrideSpeed) return _prevSpeed;
-            var speed = Vector3.Distance(transform.position, _prevPosition) / Time.fixedDeltaTime;
+            if (_useOverrideSpeed)
+            {
+                return _prevSpeed;
+            }
+    
+            var dt = Time.time - _prevSpeedTime;
+            if (dt < 0.001f)
+            {
+                return _prevSpeed;
+            }
+    
+            var speed = Vector3.Distance(transform.position, _prevPosition) / dt;
             _prevPosition = transform.position;
+            _prevSpeedTime = Time.time;
             _prevSpeed = speed;
             return speed;
         }

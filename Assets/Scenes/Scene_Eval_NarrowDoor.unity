@@ -473,19 +473,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sfmAgentPrefab: {fileID: 793577169775243660, guid: 579bf81a64004614fbae60dfc4ab10b8, type: 3}
-  goal: {fileID: 641944381}
-  agentCount: 93
-  spawnMinX: -4
-  spawnMaxX: 3.5
-  spawnMinZ: -0.5
-  spawnMaxZ: 4
+  metricsLogger: {fileID: 1788929301}
   meanDesiredSpeed: 1.34
   stdDesiredSpeed: 0.26
   minDesiredSpeed: 0.5
   maxDesiredSpeed: 2
   meanRadius: 0.015
   stdRadius: 0.005
-  metricsLogger: {fileID: 1788929301}
+  streams:
+  - name: Room
+    goal: {fileID: 641944381}
+    agentCount: 93
+    spawnRate: 0
+    minX: -4
+    maxX: 3.5
+    minZ: -0.5
+    maxZ: 4
+    minSpawnDist: 0.41
 --- !u!4 &262200797
 Transform:
   m_ObjectHideFlags: 0
@@ -1084,8 +1088,13 @@ MonoBehaviour:
   exitMeasurementPoint2: {fileID: 0}
   scenarioAreaM2: 11
   frameSampleInterval: 0.1
-  curveSampleInterval: 0.5
   headwaySampleInterval: 0.25
+  fdSampleInterval: 0.5
+  heatmapSampleInterval: 2
+  measureZoneMinX: -2.8
+  measureZoneMaxX: 2.4
+  measureZoneMinZ: -1.2
+  measureZoneMaxZ: 1.7
   totalAgents: 0
   evacuatedAgents: 0
   elapsedTime: 0

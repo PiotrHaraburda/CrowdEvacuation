@@ -794,7 +794,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataFolderPath: C:/Users/piotr/UnityProjects/CrowdEvacuation/Trajectories/data_processed/crossing
-  specificFileName: D_007.json
+  specificFileName: D_003.json
   ghostPrefab: {fileID: 793577169775243660, guid: 5d3a2dd6351051440a443cc034cd3a2a, type: 3}
   dataOffset: {x: 0, y: 0}
   metricsLogger: {fileID: 1607329508}
@@ -843,34 +843,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sfmAgentPrefab: {fileID: 793577169775243660, guid: 579bf81a64004614fbae60dfc4ab10b8, type: 3}
-  goal: {fileID: 0}
-  agentCount: 93
-  spawnMinX: -3
-  spawnMaxX: 3
-  spawnMinZ: -0.8
-  spawnMaxZ: 1.6
+  metricsLogger: {fileID: 1607329508}
   meanDesiredSpeed: 1.34
   stdDesiredSpeed: 0.26
   minDesiredSpeed: 0.5
   maxDesiredSpeed: 2
   meanRadius: 0.2
   stdRadius: 0.02
-  crossingMode: 1
-  goalSouth: {fileID: 216961355}
-  agentCountNS: 328
-  spawnRateNS: 2.4
-  nsMinX: -1.6
-  nsMaxX: 2.1
-  nsMinZ: 6
-  nsMaxZ: 8
-  goalWest: {fileID: 595133192}
-  agentCountEW: 278
-  spawnRateEW: 3.42
-  ewMinX: 5.5
-  ewMaxX: 7
-  ewMinZ: -0.5
-  ewMaxZ: 2.4
-  metricsLogger: {fileID: 1607329508}
+  streams:
+  - name: N - S
+    goal: {fileID: 216961355}
+    agentCount: 329
+    spawnRate: 1.96
+    minX: -1.6
+    maxX: 2.1
+    minZ: 6
+    maxZ: 8
+    minSpawnDist: 0.41
+  - name: E - W
+    goal: {fileID: 595133192}
+    agentCount: 279
+    spawnRate: 1.96
+    minX: 5.5
+    maxX: 7
+    minZ: -0.5
+    maxZ: 2.4
+    minSpawnDist: 0.41
 --- !u!4 &1091167414
 Transform:
   m_ObjectHideFlags: 0
@@ -1411,15 +1409,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelType: SFM
   scenarioId: Crossing90
-  runId: D_007_SFM
+  runId: D_003_SFM
   outputDirectory: Metrics
   densityMeasurementRadius: 2
   exitMeasurementPoint: {fileID: 1406471064}
   exitMeasurementPoint2: {fileID: 1234098308}
   scenarioAreaM2: 90
   frameSampleInterval: 0.5
-  curveSampleInterval: 0.5
   headwaySampleInterval: 1
+  fdSampleInterval: 0.5
+  heatmapSampleInterval: 2
+  measureZoneMinX: -5
+  measureZoneMaxX: 6.5
+  measureZoneMinZ: -4.5
+  measureZoneMaxZ: 7
   totalAgents: 0
   evacuatedAgents: 0
   elapsedTime: 0

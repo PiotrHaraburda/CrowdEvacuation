@@ -22,9 +22,16 @@ namespace Metrics
         
         [Header("Sampling")] 
         public float frameSampleInterval = 0.1f;
-        public float curveSampleInterval = 0.5f;
         public float headwaySampleInterval = 0.25f;
+        public float fdSampleInterval = 0.5f;
+        public float heatmapSampleInterval = 2.0f;
 
+        [Header("Measurement zone")]
+        public float measureZoneMinX = -2.8f;
+        public float measureZoneMaxX = 2.4f;
+        public float measureZoneMinZ = -1.2f;
+        public float measureZoneMaxZ = 1.7f;
+        
         [Header("State")] 
         public int totalAgents;
         [SerializeField] public int evacuatedAgents;
@@ -44,16 +51,18 @@ namespace Metrics
         private readonly Dictionary<int, int> _wallCollisions = new();
         private readonly Dictionary<int, int> _agentCollisions = new();
 
-        private readonly List<float> _evacuationCurveTimes = new();
-        private readonly List<float> _evacuationCurvePercents = new();
         private readonly List<float> _specificFlowTimeSeries = new();
-        private readonly List<float> _specificFlowTimeStamps = new();
         private readonly List<float> _exitDensityTimeSeries = new();
-        private readonly List<float> _exitDensityTimeStamps = new();
+        
+        private readonly List<float> _evacuationCurve = new();
+        private readonly List<(float time, float density, float speed)> _fundamentalDiagramRecords = new();
+        private readonly List<(float time, float density, float flow)> _specificFlowTimeSeriesDetailed = new();
+        private readonly List<(float time, int x, int z, float density)> _densityHeatmapRecords = new();
 
         private float _lastFrameSample;
-        private float _lastCurveSample;
         private float _lastHeadwaySample;
+        private float _lastFDSample;
+        private float _lastHeatmapSample;
 
         private MetricsAgent[] _agents;
 
@@ -83,16 +92,22 @@ namespace Metrics
                 SampleFrame(active);
             }
 
-            if (elapsedTime - _lastCurveSample >= curveSampleInterval)
-            {
-                _lastCurveSample = elapsedTime;
-                SampleEvacuationCurve();
-            }
-
             if (elapsedTime - _lastHeadwaySample >= headwaySampleInterval)
             {
                 _lastHeadwaySample = elapsedTime;
                 SampleHeadways(active);
+            }
+            
+            if (elapsedTime - _lastFDSample >= fdSampleInterval)
+            {
+                _lastFDSample = elapsedTime;
+                SampleFundamentalDiagram(active);
+            }
+
+            if (elapsedTime - _lastHeatmapSample >= heatmapSampleInterval)
+            {
+                _lastHeatmapSample = elapsedTime;
+                SampleDensityHeatmap(active);
             }
         }
 
@@ -105,12 +120,15 @@ namespace Metrics
             var exitDensity = exitMeasurementPoint2 != null ? (d1 + d2) / 2f : d1;
             currentExitDensity = exitDensity;
             _exitDensityTimeSeries.Add(exitDensity);
-            _exitDensityTimeStamps.Add(elapsedTime);
 
             var count = active.Length;
 
             foreach (var agent in active)
             {
+                if (!IsInMeasurementZone(agent.transform.position))
+                {
+                    continue;
+                }
                 var speed = agent.GetInstantSpeed();
 
                 _frameRecords.Add(new AgentFrameRecord
@@ -137,7 +155,7 @@ namespace Metrics
             var specificFlow = exitDensity * exitSpeed;
             currentSpecificFlow = specificFlow;
             _specificFlowTimeSeries.Add(specificFlow);
-            _specificFlowTimeStamps.Add(elapsedTime);
+            _specificFlowTimeSeriesDetailed.Add((elapsedTime, exitDensity, specificFlow));
         }
 
         private static float MeasureLocalDensityCircle(MetricsAgent[] agents, Transform center, float radius)
@@ -151,17 +169,15 @@ namespace Metrics
             return count / area;
         }
 
-        private void SampleEvacuationCurve()
-        {
-            var pct = totalAgents > 0 ? (float)evacuatedAgents / totalAgents * 100f : 0f;
-            _evacuationCurveTimes.Add(elapsedTime);
-            _evacuationCurvePercents.Add(pct);
-        }
-
         private void SampleHeadways(MetricsAgent[] active)
         {
             for (var i = 0; i < active.Length; i++)
             {
+                if (!IsInMeasurementZone(active[i].transform.position))
+                {
+                    continue;
+                }
+                
                 var minDist = float.MaxValue;
                 var speedAtMin = 0f;
                 for (var j = 0; j < active.Length; j++)
@@ -192,6 +208,72 @@ namespace Metrics
                 }
             }
         }
+        
+        private void SampleFundamentalDiagram(MetricsAgent[] active)
+        {
+            if (active.Length < 2) return;
+
+            foreach (var agent in active)
+            {
+                if (!IsInMeasurementZone(agent.transform.position))
+                {
+                    continue;
+                }
+                
+                var pos = agent.transform.position;
+                pos.y = 0f;
+
+                var nearbyCount = 0;
+                var speedSum = 0f;
+                var measureRadius = 2f;
+
+                foreach (var other in active)
+                {
+                    if (other == agent)
+                    {
+                        continue;
+                    }
+                    var otherPos = other.transform.position;
+                    otherPos.y = 0f;
+                    if ((pos - otherPos).sqrMagnitude <= measureRadius * measureRadius)
+                    {
+                        nearbyCount++;
+                        speedSum += other.GetLastSpeed();
+                    }
+                }
+
+                var localDensity = (nearbyCount + 1) / (Mathf.PI * measureRadius * measureRadius);
+                var localSpeed = (agent.GetLastSpeed() + speedSum) / (nearbyCount + 1);
+
+                if (localDensity > 0.5f)
+                    _fundamentalDiagramRecords.Add((elapsedTime, localDensity, localSpeed));
+            }
+        }
+
+        private void SampleDensityHeatmap(MetricsAgent[] active)
+        {
+            if (active.Length == 0)
+            {
+                return;
+            }
+
+            var cellSize = 1f;
+            var counts = new Dictionary<(int, int), int>();
+
+            foreach (var agent in active)
+            {
+                var gx = Mathf.FloorToInt(agent.transform.position.x / cellSize);
+                var gz = Mathf.FloorToInt(agent.transform.position.z / cellSize);
+                var key = (gx, gz);
+                counts[key] = counts.GetValueOrDefault(key, 0) + 1;
+            }
+
+            foreach (var kvp in counts)
+            {
+                var density = kvp.Value / (cellSize * cellSize);
+                _densityHeatmapRecords.Add((elapsedTime, kvp.Key.Item1, kvp.Key.Item2, density));
+            }
+        }
 
         public void OnAgentEvacuated(int agentId, string exitId)
         {
@@ -204,7 +286,9 @@ namespace Metrics
                 agentId = agentId,
                 exitId = exitId
             });
-
+            
+            _evacuationCurve.Add(elapsedTime);
+            
             if (evacuatedAgents < totalAgents) return;
             
             _running = false;
@@ -246,15 +330,23 @@ namespace Metrics
 
         private void ExportAll()
         {
-            var dir = Path.Combine(Application.persistentDataPath, outputDirectory, scenarioId, runId);
+            var projectRoot = Directory.GetParent(Application.dataPath)?.FullName;
+            if (projectRoot == null)
+            {
+                return;
+            }
+            
+            var dir = Path.Combine(projectRoot, outputDirectory, scenarioId, runId);
             Directory.CreateDirectory(dir);
 
             WriteAgentsCsv(dir);
             WriteCollisionsCsv(dir);
             WriteThroughputCsv(dir);
             WriteHeadwayCsv(dir);
-            WriteEvacuationCurveCsv(dir);
-            WriteSpecificFlowCsv(dir);
+            WriteEvacuationCurve(dir);
+            WriteFundamentalDiagram(dir);
+            WriteSpecificFlowTimeSeries(dir);
+            WriteDensityHeatmap(dir);
             WriteSummary(dir);
 
             Debug.Log($"[Metrics] Export complete - {dir}");
@@ -292,23 +384,38 @@ namespace Metrics
                 sb.AppendLine($"{r.time:F4};{r.agentId};{r.headwayDistance:F4};{r.headwayVelocity:F4}");
             File.WriteAllText(Path.Combine(dir, "headway.csv"), sb.ToString());
         }
-
-        private void WriteEvacuationCurveCsv(string dir)
+        
+        private void WriteEvacuationCurve(string dir)
         {
-            var sb = new StringBuilder("time;evacuated_percent\n");
-            for (var i = 0; i < _evacuationCurveTimes.Count; i++)
-                sb.AppendLine($"{_evacuationCurveTimes[i]:F3};{_evacuationCurvePercents[i]:F2}");
+            var sb = new StringBuilder("time;evacuated_count\n");
+            _evacuationCurve.Sort();
+            for (var i = 0; i < _evacuationCurve.Count; i++)
+                sb.AppendLine($"{_evacuationCurve[i]:F3};{i + 1}");
             File.WriteAllText(Path.Combine(dir, "evacuation_curve.csv"), sb.ToString());
         }
 
-        private void WriteSpecificFlowCsv(string dir)
+        private void WriteFundamentalDiagram(string dir)
         {
-            var sb = new StringBuilder("time;specificFlow;exitDensity\n");
-            var n = Mathf.Min(_specificFlowTimeStamps.Count, _exitDensityTimeSeries.Count);
-            for (var i = 0; i < n; i++)
-                sb.AppendLine(
-                    $"{_specificFlowTimeStamps[i]:F3};{_specificFlowTimeSeries[i]:F4};{_exitDensityTimeSeries[i]:F4}");
-            File.WriteAllText(Path.Combine(dir, "specific_flow.csv"), sb.ToString());
+            var sb = new StringBuilder("time;density;speed\n");
+            foreach (var r in _fundamentalDiagramRecords)
+                sb.AppendLine($"{r.time:F3};{r.density:F4};{r.speed:F4}");
+            File.WriteAllText(Path.Combine(dir, "fundamental_diagram.csv"), sb.ToString());
+        }
+
+        private void WriteSpecificFlowTimeSeries(string dir)
+        {
+            var sb = new StringBuilder("time;density;specific_flow\n");
+            foreach (var r in _specificFlowTimeSeriesDetailed)
+                sb.AppendLine($"{r.time:F3};{r.density:F4};{r.flow:F4}");
+            File.WriteAllText(Path.Combine(dir, "specific_flow_series.csv"), sb.ToString());
+        }
+
+        private void WriteDensityHeatmap(string dir)
+        {
+            var sb = new StringBuilder("time;grid_x;grid_z;density\n");
+            foreach (var r in _densityHeatmapRecords)
+                sb.AppendLine($"{r.time:F3};{r.x};{r.z};{r.density:F4}");
+            File.WriteAllText(Path.Combine(dir, "density_heatmap.csv"), sb.ToString());
         }
 
         private void WriteSummary(string dir)
@@ -412,6 +519,12 @@ namespace Metrics
                           $"Agents: {totalAgents - evacuatedAgents}/{totalAgents}\n" +
                           $"Time: {elapsedTime:F1}s");
             GUILayout.EndArea();
+        }
+        
+        private bool IsInMeasurementZone(Vector3 pos)
+        {
+            return pos.x >= measureZoneMinX && pos.x <= measureZoneMaxX &&
+                   pos.z >= measureZoneMinZ && pos.z <= measureZoneMaxZ;
         }
     }
 }
