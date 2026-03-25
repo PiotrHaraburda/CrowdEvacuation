@@ -29,3 +29,12 @@ pycache/
 
 .DS_Store
 Thumbs.db
+
+--- Unity generated ---
+*.csproj
+*.sln
+*.suo
+*.user
+*.pidb
+*.booproj
+*.unityproj

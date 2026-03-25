@@ -8,6 +8,7 @@ TagManager:
   - Exit
   - Agent
   - Spawn
+  - Hazard
   layers:
   - Default
   - TransparentFX
@@ -15,9 +16,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Wall
+  - Agent
+  - Hazard
   - 
   - 
   - 

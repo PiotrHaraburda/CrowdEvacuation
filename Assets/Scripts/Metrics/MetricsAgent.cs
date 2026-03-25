@@ -92,5 +92,45 @@ namespace Metrics
                 return;
             }
         }
+        
+        public bool CheckExitRL(Vector3 pos)
+        {
+            if (IsEvacuated)
+            {
+                return false;
+            }
+
+            if (_exitColliders == null)
+            {
+                var exits = GameObject.FindGameObjectsWithTag("Exit");
+                _exitColliders = new Collider[exits.Length];
+                for (var i = 0; i < exits.Length; i++)
+                    _exitColliders[i] = exits[i].GetComponent<Collider>();
+            }
+
+            foreach (var col in _exitColliders)
+            {
+                if (!col) continue;
+                var contains = col.bounds.Contains(pos);
+                if (contains)
+                {
+                    IsEvacuated = true;
+                    _logger?.OnAgentEvacuated(agentId, col.gameObject.name);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        
+        public void ResetState()
+        {
+            IsEvacuated = false;
+            _prevPosition = transform.position;
+            _prevSpeedTime = Time.time;
+            _prevSpeed = 0f;
+            _useOverrideSpeed = false;
+            _exitColliders = null;
+        }
     }
 }

@@ -44,10 +44,13 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
-    <Analyzer Include="C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.dt.app-ui@874541faca7e\Runtime\SourceGenerators\netstandard2.0\EnumToLowerCase.dll" />
-    <Analyzer Include="C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.ai.inference@e760aa121ec7\Runtime\Core\SourceGenerator\SourceGenerators.dll" />
+    <Analyzer Include="C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.dt.app-ui@874541faca7e\Runtime\SourceGenerators\netstandard2.0\EnumToLowerCase.dll" />
+    <Analyzer Include="C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.ai.inference@e760aa121ec7\Runtime\Core\SourceGenerator\SourceGenerators.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\RL\EvacuationAgent.cs" />
+    <Compile Include="Assets\Scripts\RL\TrainingEnvironmentManager.cs" />
+    <Compile Include="Assets\Scripts\Utility\FreeLookCamera.cs" />
     <Compile Include="Assets\Scripts\Agents\TrajectoryData.cs" />
     <Compile Include="Assets\Scripts\Agents\GhostAgent.cs" />
     <Compile Include="Assets\Scripts\SFM\SocialForceAgent.cs" />
@@ -57,33 +60,177 @@
     <Compile Include="Assets\Scripts\Agents\GhostPlaybackManager.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Metrics\MetricsAgent.cs" />
+    <None Include="Library\PackageCache\com.unity.ai.navigation@eb5635ad590d\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Chip.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Library\PackageCache\com.unity.burst@6aff1dd08a0c\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Cursors.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\UITK.uss" />
+    <None Include="Library\PackageCache\com.unity.test-framework.performance@92d1d09a72ed\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Avatar.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\DayPicker.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\HelpText.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Drawer.uss" />
+    <None Include="Library\PackageCache\com.unity.inputsystem@7fe8299111a7\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ColorField.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
+    <None Include="Library\PackageCache\com.unity.collections@56bff8827a7e\Unity.Collections.LowLevel.ILSupport\README.txt" />
+    <None Include="Library\PackageCache\com.unity.inputsystem@7fe8299111a7\ValidationConfig.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Radio.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\DatePicker.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Menu.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ColorSlider.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ColorPicker.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\GridView.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ActionButton.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Toolbar.uss" />
+    <None Include="Library\PackageCache\com.unity.ml-agents@0f918b8a6271\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Icons\Icons.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Large.class.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Row.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ColorSwatch.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Palette.uss" />
+    <None Include="Library\PackageCache\com.unity.test-framework.performance@92d1d09a72ed\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\StackView.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Spacer.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\SwipeView.uss" />
+    <None Include="Library\PackageCache\com.unity.timeline@c58b4ee65782\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\TextArea.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Breadcrumbs.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\MonthPicker.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Progress.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Medium.uss" />
+    <None Include="Library\PackageCache\com.unity.ide.visualstudio@198cdf337d13\ValidationConfig.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\InputLabel.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\ML-Agents\Timers\02_Corridor_timers.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\PageView.uss" />
+    <None Include="Library\PackageCache\com.unity.mathematics@8017b507cc74\package.json" />
+    <None Include="Library\PackageCache\com.unity.burst@6aff1dd08a0c\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Preloader.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+    <None Include="Library\PackageCache\com.unity.visualscripting@6279e2b7c485\package.json" />
+    <None Include="Library\PackageCache\com.unity.collab-proxy@a5329f833fa8\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Vector2Field.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\DateField.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\FAB.uss" />
+    <None Include="Library\PackageCache\com.unity.ide.visualstudio@198cdf337d13\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\ColorWheel.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Tooltip.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\SplitView.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\TouchSlider.uss" />
+    <None Include="Library\PackageCache\com.unity.ide.rider@4d374c7eb6db\package.json" />
+    <None Include="Library\PackageCache\com.unity.searcher@1e17ce91558d\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Stepper.uss" />
+    <None Include="Library\PackageCache\com.unity.ide.rider@4d374c7eb6db\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\AvatarGroup.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ListViewItem.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Slider.uss" />
+    <None Include="Assets\ML-Agents\Timers\Scene_Training_timers.json" />
+    <None Include="Library\PackageCache\com.unity.nuget.mono-cecil@d6f9955a5d5f\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Tray.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Icon.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\CircularProgress.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ScrollView.uss" />
+    <None Include="Library\PackageCache\com.unity.visualscripting@6279e2b7c485\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Context.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\DrawerHeader.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Dark.uss" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Editor Light.class.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Large.uss" />
+    <None Include="Library\PackageCache\com.unity.ide.visualstudio@198cdf337d13\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\SVSquare.shader" />
+    <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@74deb55db2a0\link.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Tabs.uss" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Small.uss" />
+    <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@74deb55db2a0\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Toggle.uss" />
     <None Include="Assets\ML-Agents\Timers\SampleScene_timers.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ActionGroup.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Editor Light.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Heading.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\LinearProgress.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\YearPicker.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Alias.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Light.class.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\AppUI.cginc" />
+    <None Include="Library\PackageCache\com.unity.inputsystem@7fe8299111a7\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Editor Dark.class.uss" />
+    <None Include="Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\ProtoBuffer\link.xml" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\CanvasBackground.shader" />
+    <None Include="Library\PackageCache\com.unity.ai.inference@e760aa121ec7\package.json" />
     <None Include="Assets\ML-Agents\Timers\01_ML_Agents_test_timers.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Toast.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\DropZone.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Canvas.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\AppBar.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Quote.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Small.class.uss" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Dialog.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Picker.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Divider.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Badge.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Light.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\PageIndicator.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Editor Dark.uss" />
+    <None Include="Library\PackageCache\com.unity.collab-proxy@a5329f833fa8\ValidationConfig.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Medium.class.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\NumericalField.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\TextField.uss" />
+    <None Include="Library\PackageCache\com.unity.ai.navigation@eb5635ad590d\package.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Vector4Field.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\RectField.uss" />
+    <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@74deb55db2a0\Runtime\AOT\Newtonsoft.Json.xml" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Elevation.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\BottomNavBar.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Popover.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\BoundsField.uss" />
+    <None Include="Library\PackageCache\com.unity.visualscripting@6279e2b7c485\ValidationConfig.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Checkbox.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\FieldLabel.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\ColorSwatch.shader" />
+    <None Include="Library\PackageCache\com.unity.collections@56bff8827a7e\package.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Accordion.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Dropdown.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Globals.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ActionBar.uss" />
+    <None Include="Library\PackageCache\com.unity.mathematics@8017b507cc74\ValidationExceptions.json" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Text.uss" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Dark.class.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Button.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Link.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ColorWheel.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\App UI.uss" />
+    <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@74deb55db2a0\Runtime\Newtonsoft.Json.xml" />
+    <None Include="Library\PackageCache\com.unity.collections@56bff8827a7e\ValidationExceptions.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Library\PackageCache\com.unity.burst@6aff1dd08a0c\Unity.Burst.Unsafe.xml" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Vector3Field.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ColorToolbar.uss" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne.json" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Navigation.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\Box.shader" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\AssetTargetField.uss" />
+    <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Shaders\Mask.shader" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
@@ -433,31 +580,31 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Managed\UnityEngine\UnityEditor.XRModule.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Abstractions">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\System.IO.Abstractions.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\System.IO.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.collections@56bff8827a7e\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.collections@56bff8827a7e\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.ext.nunit@031a54704bff\net40\unity-custom\nunit.framework.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.ext.nunit@031a54704bff\net40\unity-custom\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf_Packed">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\Google.Protobuf_Packed.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\Google.Protobuf_Packed.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.visualscripting@6279e2b7c485\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.visualscripting@6279e2b7c485\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Grpc.Core">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\ProtoBuffer\Grpc.Core.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\ProtoBuffer\Grpc.Core.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.nuget.newtonsoft-json@74deb55db2a0\Runtime\Newtonsoft.Json.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.nuget.newtonsoft-json@74deb55db2a0\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.nuget.mono-cecil@d6f9955a5d5f\Mono.Cecil.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.nuget.mono-cecil@d6f9955a5d5f\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Abstractions.TestingHelpers">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\System.IO.Abstractions.TestingHelpers.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.ml-agents@0f918b8a6271\Plugins\System.IO.Abstractions.TestingHelpers.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
@@ -825,200 +972,241 @@
     <Reference Include="System.Xml.Serialization">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.InputSystem.ForUI">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.InputSystem.ForUI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ML-Agents.CommunicatorObjects">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.ML-Agents.CommunicatorObjects.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Searcher.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Rider.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AppUI.Navigation.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.AppUI.Navigation.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AI.Navigation">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.AI.Navigation.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InferenceEngine">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.InferenceEngine.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Shaders">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InferenceEngine.iOSBLAS">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.InferenceEngine.iOSBLAS.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime.Shared">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.Shared.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.Shared.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ShaderGraph.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Editor.Shared">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.Shared.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.Shared.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.PlasticSCM.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Multiplayer.Center.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Multiplayer.Center.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ML-Agents">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.ML-Agents.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.Multiplayer.Center.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.GPUDriven.Runtime">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.GPUDriven.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InferenceEngine.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.InferenceEngine.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AppUI.Redux">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.AppUI.Redux.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Collections">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Collections.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.GPUDriven.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="PPv2URPConverters">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\PPv2URPConverters.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\PPv2URPConverters.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rendering.LightTransport.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Rendering.LightTransport.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Core">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ML-Agents.Editor.Input">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.ML-Agents.Editor.Input.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.Rendering.LightTransport.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Config.Runtime">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Config.Runtime.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Config.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AppUI">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.AppUI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Collections.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Collections.Editor.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Shared.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualScripting.Shared.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Core.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Multiplayer.Center.Common">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Multiplayer.Center.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AI.Navigation.Updater">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.AI.Navigation.Updater.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InferenceEngine.Tokenization">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.InferenceEngine.Tokenization.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Flow.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualScripting.Flow.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AppUI.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.AppUI.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ML-Agents.Input">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.ML-Agents.Input.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.Multiplayer.Center.Common.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InferenceEngine.MacBLAS">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.InferenceEngine.MacBLAS.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.State.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AI.Navigation.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.AI.Navigation.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.State">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ML-Agents.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.ML-Agents.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.AI.Navigation.Editor.ConversionSystem">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.AI.Navigation.Editor.ConversionSystem.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Burst.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Burst">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualStudio.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Flow">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InferenceEngine.ONNX.Editor">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.InferenceEngine.ONNX.Editor.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rendering.LightTransport.Runtime">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.Rendering.LightTransport.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InputSystem">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.Rendering.LightTransport.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.2D.Runtime">
-      <HintPath>C:\Users\piotr\UnityProjects\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.2D.Runtime.dll</HintPath>
+      <HintPath>C:\Users\Piotr\CrowdEvacuation\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.2D.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Unity.InputSystem.ForUI.csproj">
+      <Project>{cf981110-45d3-d6be-f013-16cd3b4c0de0}</Project>
+      <Name>Unity.InputSystem.ForUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ML-Agents.CommunicatorObjects.csproj">
+      <Project>{58de0906-9045-69fb-bbaa-87ae2d515a2f}</Project>
+      <Name>Unity.ML-Agents.CommunicatorObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Searcher.Editor.csproj">
+      <Project>{cb70d09e-8880-0ecd-72de-415ec6479a7c}</Project>
+      <Name>Unity.Searcher.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Rider.Editor.csproj">
+      <Project>{f01f3ac6-3035-1458-7cdc-093497b1fa7d}</Project>
+      <Name>Unity.Rider.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AppUI.Navigation.Editor.csproj">
+      <Project>{cfa25dac-ad41-e2ae-8ece-f4bad87383d5}</Project>
+      <Name>Unity.AppUI.Navigation.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Navigation.csproj">
+      <Project>{273fa44c-07c2-7f3a-bb13-cb598a5d85d7}</Project>
+      <Name>Unity.AI.Navigation</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.InferenceEngine.csproj">
+      <Project>{a31a1a68-e3d2-2b16-b363-2a7d5eed6228}</Project>
+      <Name>Unity.InferenceEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.InferenceEngine.iOSBLAS.csproj">
+      <Project>{73dbd78a-b054-d03f-f12e-2514c218f1bc}</Project>
+      <Name>Unity.InferenceEngine.iOSBLAS</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Timeline.Editor.csproj">
+      <Project>{fd10ba6d-bbd1-2164-8bca-d7bc1964f886}</Project>
+      <Name>Unity.Timeline.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Timeline.csproj">
+      <Project>{a34e8586-6cee-81ff-db2b-882a18ce3b02}</Project>
+      <Name>Unity.Timeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.PlasticSCM.Editor.csproj">
+      <Project>{b3dbca2d-f4e9-c4ba-fd54-690ec2709c21}</Project>
+      <Name>Unity.PlasticSCM.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ML-Agents.csproj">
+      <Project>{da59f20f-307b-d770-49f4-0d16640daf92}</Project>
+      <Name>Unity.ML-Agents</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Mathematics.Editor.csproj">
+      <Project>{c8714fcc-6e18-2edd-024b-535787c6b0c2}</Project>
+      <Name>Unity.Mathematics.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.InferenceEngine.Editor.csproj">
+      <Project>{b5c04b1f-a489-eba3-f84e-f004514687db}</Project>
+      <Name>Unity.InferenceEngine.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AppUI.Redux.csproj">
+      <Project>{36349f28-8d89-4bd2-6d1e-7a90c13ae617}</Project>
+      <Name>Unity.AppUI.Redux</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Collections.csproj">
+      <Project>{df9fe626-7b0e-1670-6705-05babce5a8b8}</Project>
+      <Name>Unity.Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.Core.csproj">
+      <Project>{57590c1d-87c1-1fe8-e2fe-c25b68c51341}</Project>
+      <Name>Unity.VisualScripting.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ML-Agents.Editor.Input.csproj">
+      <Project>{0684ef97-d6e8-6097-7d4c-9a2819d18afa}</Project>
+      <Name>Unity.ML-Agents.Editor.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AppUI.csproj">
+      <Project>{bba479c6-e238-0668-ac49-6bb6b9fff360}</Project>
+      <Name>Unity.AppUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Collections.Editor.csproj">
+      <Project>{1e4b00fe-df53-5c7b-e58e-3e2e9b3191e4}</Project>
+      <Name>Unity.Collections.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.Shared.Editor.csproj">
+      <Project>{7ec2a333-4616-40b2-6cd2-8a6e4e198028}</Project>
+      <Name>Unity.VisualScripting.Shared.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.Core.Editor.csproj">
+      <Project>{ee1f655f-255c-d61b-40c2-ddbbaf900d70}</Project>
+      <Name>Unity.VisualScripting.Core.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Navigation.Updater.csproj">
+      <Project>{d0d4eb0f-2016-9400-7e2b-e686e5da1436}</Project>
+      <Name>Unity.AI.Navigation.Updater</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.InferenceEngine.Tokenization.csproj">
+      <Project>{a59d856e-8681-8e0c-e2fe-ef0de1817815}</Project>
+      <Name>Unity.InferenceEngine.Tokenization</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj">
+      <Project>{bab7c2d3-154c-9c21-c1a5-b9d627a00c9e}</Project>
+      <Name>Unity.VisualScripting.Flow.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AppUI.Editor.csproj">
+      <Project>{ada48173-9a8a-e523-ba8a-a50398a07089}</Project>
+      <Name>Unity.AppUI.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ML-Agents.Input.csproj">
+      <Project>{96d7aeb1-1c31-98ff-7dbc-36e6feaa9693}</Project>
+      <Name>Unity.ML-Agents.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.InferenceEngine.MacBLAS.csproj">
+      <Project>{7e0f6a2a-a079-700e-aa6d-b70c39b509bb}</Project>
+      <Name>Unity.InferenceEngine.MacBLAS</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.SettingsProvider.Editor.csproj">
+      <Project>{226a9238-8242-7e03-1d9d-5a684607135f}</Project>
+      <Name>Unity.VisualScripting.SettingsProvider.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.State.Editor.csproj">
+      <Project>{f1167584-a8ea-0af0-75d2-2b6ef6438a7a}</Project>
+      <Name>Unity.VisualScripting.State.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Navigation.Editor.csproj">
+      <Project>{7d291635-10f5-0814-b1ae-d2d01ac322e3}</Project>
+      <Name>Unity.AI.Navigation.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Mathematics.csproj">
+      <Project>{b9a6919a-15a9-54bc-564d-8e7b9663e7ae}</Project>
+      <Name>Unity.Mathematics</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.State.csproj">
+      <Project>{101309bd-0154-6db8-b7ba-115eb1d8f14e}</Project>
+      <Name>Unity.VisualScripting.State</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ML-Agents.Editor.csproj">
+      <Project>{38bca754-9d7e-4c74-9c5a-f14b9ccb15fb}</Project>
+      <Name>Unity.ML-Agents.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.AI.Navigation.Editor.ConversionSystem.csproj">
+      <Project>{48eb4f66-63ef-c167-5082-f71e338be0af}</Project>
+      <Name>Unity.AI.Navigation.Editor.ConversionSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Burst.Editor.csproj">
+      <Project>{ac253d4b-bb06-688a-5cfc-c0477a3ae1a0}</Project>
+      <Name>Unity.Burst.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.Burst.csproj">
+      <Project>{774c6c97-7a82-9152-4de1-2e5f39aee06e}</Project>
+      <Name>Unity.Burst</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualStudio.Editor.csproj">
+      <Project>{f0148e50-48de-3de0-9c72-b5b302e17b3c}</Project>
+      <Name>Unity.VisualStudio.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.VisualScripting.Flow.csproj">
+      <Project>{468733f9-0549-b7e3-6438-9cb800032ca5}</Project>
+      <Name>Unity.VisualScripting.Flow</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.InferenceEngine.ONNX.Editor.csproj">
+      <Project>{cd50a7c7-a7db-9560-291b-1372f634eb64}</Project>
+      <Name>Unity.InferenceEngine.ONNX.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.InputSystem.csproj">
+      <Project>{629149ed-51e3-59f0-cb4a-03eb184aab59}</Project>
+      <Name>Unity.InputSystem</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

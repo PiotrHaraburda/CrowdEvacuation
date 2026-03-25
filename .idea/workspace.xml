@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84eea257-372f-4676-b074-99441a65da73" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Metrics/narrow_door_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assembly-CSharp.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Assembly-CSharp.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/EvacuationAgent.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/EvacuationAgent.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Metrics/EvacuationMetricsLogger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Metrics/EvacuationMetricsLogger.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Metrics/MetricsAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Metrics/MetricsAgent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CrowdEvacuation.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/CrowdEvacuation.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" afterDir="false" />
-    </list>
+    <list default="true" id="84eea257-372f-4676-b074-99441a65da73" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
