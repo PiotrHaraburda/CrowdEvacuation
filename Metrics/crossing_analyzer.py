@@ -18,26 +18,26 @@ def load_csv(path):
 
 
 ghost = {
-    'ec': load_csv(f'{base}/D_003/evacuation_curve.csv'),
-    'fd': load_csv(f'{base}/D_003/fundamental_diagram.csv'),
-    'sf': load_csv(f'{base}/D_003/specific_flow_series.csv'),
-    'hm': load_csv(f'{base}/D_003/density_heatmap.csv'),
-    'af': load_csv(f'{base}/D_003/agents_frame.csv'),
-    'hw': load_csv(f'{base}/D_003/headway.csv'),
-    'tp': load_csv(f'{base}/D_003/throughput.csv'),
-    'co': load_csv(f'{base}/D_003/collisions.csv'),
-    'sum': load_csv(f'{base}/D_003/summary.csv'),
+    'ec': load_csv(f'{base}/D_007/evacuation_curve.csv'),
+    'fd': load_csv(f'{base}/D_007/fundamental_diagram.csv'),
+    'sf': load_csv(f'{base}/D_007/specific_flow_series.csv'),
+    'hm': load_csv(f'{base}/D_007/density_heatmap.csv'),
+    'af': load_csv(f'{base}/D_007/agents_frame.csv'),
+    'hw': load_csv(f'{base}/D_007/headway.csv'),
+    'tp': load_csv(f'{base}/D_007/throughput.csv'),
+    'co': load_csv(f'{base}/D_007/collisions.csv'),
+    'sum': load_csv(f'{base}/D_007/summary.csv'),
 }
 sfm = {
-    'ec': load_csv(f'{base}/D_003_SFM/evacuation_curve.csv'),
-    'fd': load_csv(f'{base}/D_003_SFM/fundamental_diagram.csv'),
-    'sf': load_csv(f'{base}/D_003_SFM/specific_flow_series.csv'),
-    'hm': load_csv(f'{base}/D_003_SFM/density_heatmap.csv'),
-    'af': load_csv(f'{base}/D_003_SFM/agents_frame.csv'),
-    'hw': load_csv(f'{base}/D_003_SFM/headway.csv'),
-    'tp': load_csv(f'{base}/D_003_SFM/throughput.csv'),
-    'co': load_csv(f'{base}/D_003_SFM/collisions.csv'),
-    'sum': load_csv(f'{base}/D_003_SFM/summary.csv'),
+    'ec': load_csv(f'{base}/D_007_SFM_calibrated/evacuation_curve.csv'),
+    'fd': load_csv(f'{base}/D_007_SFM_calibrated/fundamental_diagram.csv'),
+    'sf': load_csv(f'{base}/D_007_SFM_calibrated/specific_flow_series.csv'),
+    'hm': load_csv(f'{base}/D_007_SFM_calibrated/density_heatmap.csv'),
+    'af': load_csv(f'{base}/D_007_SFM_calibrated/agents_frame.csv'),
+    'hw': load_csv(f'{base}/D_007_SFM_calibrated/headway.csv'),
+    'tp': load_csv(f'{base}/D_007_SFM_calibrated/throughput.csv'),
+    'co': load_csv(f'{base}/D_007_SFM_calibrated/collisions.csv'),
+    'sum': load_csv(f'{base}/D_007_SFM_calibrated/summary.csv'),
 }
 
 fig = plt.figure(figsize=(20, 24))
@@ -294,7 +294,7 @@ ax.set_title('(o) Flow–Density J(ρ)')
 ax.legend(fontsize=8)
 ax.grid(True, alpha=0.3)
 
-plt.suptitle('Crossing90 D_003 (entrance 1.2m) - Ghost (Empirical) vs SFM (Helbing 2000)',
+plt.suptitle('Crossing90 D_007 (entrance 2.4m) - Ghost (Empirical) vs SFM (Helbing 2000)',
              fontsize=14, fontweight='bold', y=1.0)
-plt.savefig('./Charts/crossing90_d003.png', dpi=150, bbox_inches='tight')
+plt.savefig('./Charts/crossing90_d007_calibrated.png', dpi=150, bbox_inches='tight')
 print("Done")

@@ -718,7 +718,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -1081,7 +1081,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelType: SFM
   scenarioId: NarrowDoor
-  runId: LC_001_SFM
+  runId: LC_001_SFM_cal_20
   outputDirectory: Metrics
   densityMeasurementRadius: 0.5
   exitMeasurementPoint: {fileID: 1995288927}
@@ -1360,7 +1360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f2dae0e7b7f45508e6284a7c5bb0aa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataFolderPath: C:/Users/piotr/UnityProjects/CrowdEvacuation/Trajectories/data_processed/narrow_door
+  dataFolderPath: C:/Users/Piotr/CrowdEvacuation/Trajectories/data_processed/narrow_door
   specificFileName: LC_001.json
   ghostPrefab: {fileID: 793577169775243660, guid: 5d3a2dd6351051440a443cc034cd3a2a, type: 3}
   dataOffset: {x: -0.3347, y: 0}

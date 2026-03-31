@@ -14,18 +14,19 @@ namespace SFM
         public Transform goal;
 
         [Header("Agent properties")]
-        public float desiredSpeed = 1.34f; // (Weidmann 1993)
+        public float desiredSpeed = 1.34f; // (Helbing & Molnar 1995)
+        public float velocityClamp = 1.3f; // (Helbing & Molnar 1995)
         public float mass = 80f; // (Helbing, Farkas & Vicsek 2000)
-        public float radius = 0.2f; // (Helbing & Molnar 1995)
+        public float radius = 0.2f; // (Helbing, Farkas & Vicsek 2000) use 0.3f; reduced to 0.2m based on Jülich
+                                    // participant data (mean shoulder width 0.45m ± 0.04m, Boltes et al. 2023)
+
 
         [Header("SFM parameters")]
-        public float A = 2000f; // (Helbing, Farkas & Vicsek 2000)
-        public float B = 0.08f; // (Helbing, Farkas & Vicsek 2000)
-        public float k = 120000f; // (Helbing, Farkas & Vicsek 2000)
-        public float kappa = 240000f; // (Helbing, Farkas & Vicsek 2000)
-        public float tau = 0.5f; // (Helbing & Molnar 1995)
-        public float Awall = 2000f; // (Helbing, Farkas & Vicsek 2000)
-        public float Bwall = 0.08f; // (Helbing, Farkas & Vicsek 2000)
+        public float A = 2000f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
+        public float B = 0.08f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
+        public float k = 120000f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
+        public float kappa = 240000f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
+        public float tau = 0.5f; // default from (Helbing & Molnar 1995), then calibrated
 
         [Header("State")]
         [SerializeField] private Vector3 velocity;
@@ -55,8 +56,8 @@ namespace SFM
 
             velocity += (drivingAccel + interactionForce / mass) * Time.fixedDeltaTime;
 
-            if (velocity.magnitude > desiredSpeed * 1.3f)
-                velocity = velocity.normalized * (desiredSpeed * 1.3f);
+            if (velocity.magnitude > desiredSpeed * velocityClamp)
+                velocity = velocity.normalized * (desiredSpeed * velocityClamp);
             
             transform.position += velocity * Time.fixedDeltaTime;
 
@@ -144,14 +145,14 @@ namespace SFM
                 var tio = new Vector3(-nio.z, 0f, nio.x);
                 var overlap = radius - dist;
 
-                var repulsive = Awall * Mathf.Exp(overlap / Bwall) * nio;
+                var repulsive = A * Mathf.Exp(overlap / B) * nio;
 
                 if (overlap > 0f)
                 {
                     var pushing = k * overlap * nio;
                     var vt = Vector3.Dot(velocity, tio);
                     var friction = kappa * overlap * vt * tio;
-                    repulsive += pushing + friction;
+                    repulsive += pushing - friction;
                     
                     var ma = GetComponent<MetricsAgent>();
                     if (ma)

@@ -3,4 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.10 (CrowdEvacuation)" />
   </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="C:\Users\Piotr\miniconda3\envs\mlagents" project-jdk-type="Python SDK" />
 </project>

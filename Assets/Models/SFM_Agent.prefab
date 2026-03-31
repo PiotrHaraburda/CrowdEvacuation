@@ -170,15 +170,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   goal: {fileID: 0}
   desiredSpeed: 1.34
+  velocityClamp: 1.3
   mass: 80
   radius: 0.2
-  A: 2000
+  A: 800
   B: 0.08
-  k: 120000
-  kappa: 240000
-  tau: 0.5
-  Awall: 2000
-  Bwall: 0.08
+  k: 60000
+  kappa: 120000
+  tau: 0.3
   velocity: {x: 0, y: 0, z: 0}
   evacuated: 0
 --- !u!1 &3404147506092599087

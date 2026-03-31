@@ -3,10 +3,10 @@ model_type;Ghost
 scenario_id;NarrowDoor
 run_id;LC_001
 total_agents;93
-rset_100s;36,280
-rset_95s;33,460
-rset_90s;30,820
-rset_50s;16,160
+rset_100s;36,28
+rset_95s;33,46
+rset_90s;30,82
+rset_50s;16,16
 mean_speed_ms;0,2474
 std_speed_ms;0,1716
 max_speed_ms;2,0094

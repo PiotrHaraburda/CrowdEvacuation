@@ -31,15 +31,15 @@ ghost = {
     'sum': load_csv(f'{base}/LC_001/summary.csv'),
 }
 sfm = {
-    'ec': load_csv(f'{base}/LC_001_SFM/evacuation_curve.csv'),
-    'fd': load_csv(f'{base}/LC_001_SFM/fundamental_diagram.csv'),
-    'sf': load_csv(f'{base}/LC_001_SFM/specific_flow_series.csv'),
-    'hm': load_csv(f'{base}/LC_001_SFM/density_heatmap.csv'),
-    'af': load_csv(f'{base}/LC_001_SFM/agents_frame.csv'),
-    'hw': load_csv(f'{base}/LC_001_SFM/headway.csv'),
-    'tp': load_csv(f'{base}/LC_001_SFM/throughput.csv'),
-    'co': load_csv(f'{base}/LC_001_SFM/collisions.csv'),
-    'sum': load_csv(f'{base}/LC_001_SFM/summary.csv'),
+    'ec': load_csv(f'{base}/LC_001_SFM_cal_09/evacuation_curve.csv'),
+    'fd': load_csv(f'{base}/LC_001_SFM_cal_09/fundamental_diagram.csv'),
+    'sf': load_csv(f'{base}/LC_001_SFM_cal_09/specific_flow_series.csv'),
+    'hm': load_csv(f'{base}/LC_001_SFM_cal_09/density_heatmap.csv'),
+    'af': load_csv(f'{base}/LC_001_SFM_cal_09/agents_frame.csv'),
+    'hw': load_csv(f'{base}/LC_001_SFM_cal_09/headway.csv'),
+    'tp': load_csv(f'{base}/LC_001_SFM_cal_09/throughput.csv'),
+    'co': load_csv(f'{base}/LC_001_SFM_cal_09/collisions.csv'),
+    'sum': load_csv(f'{base}/LC_001_SFM_cal_09/summary.csv'),
 }
 
 fig = plt.figure(figsize=(20, 24))
@@ -317,5 +317,5 @@ ax.grid(True, alpha=0.3)
 
 plt.suptitle('NarrowDoor LC_001 - Ghost (Empirical) vs SFM (Helbing 2000)',
              fontsize=14, fontweight='bold', y=1.0)
-plt.savefig('./Charts/narrow_door.png', dpi=150, bbox_inches='tight')
+plt.savefig('./Charts/narrow_door_calibrated.png', dpi=150, bbox_inches='tight')
 print("Done")

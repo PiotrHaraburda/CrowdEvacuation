@@ -10,7 +10,7 @@ rset_50s;67,480
 mean_speed_ms;0,5347
 std_speed_ms;0,3510
 max_speed_ms;3,6098
-mean_exit_density_pm2;0,2755
+mean_exit_density_pm2;0,1845
 peak_exit_density_pm2;0,5570
 mean_global_density_pm2;1,1862
 specific_flow_mean_pms;0,3043

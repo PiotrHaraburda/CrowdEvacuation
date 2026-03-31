@@ -220,6 +220,7 @@ MonoBehaviour:
   distanceRewardScale: 0.5
   hazardPenalty: -0.05
   hazardDetectionRadius: 3
+  hazardDirectPenalty: -0.5
   stagnationCheckSteps: 50
   stagnationThreshold: 0.1
   trainingManager: {fileID: 0}

@@ -4,7 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84eea257-372f-4676-b074-99441a65da73" name="Changes" comment="" />
+    <list default="true" id="84eea257-372f-4676-b074-99441a65da73" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/CrowdEvacuation.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Models/RL_Agent.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Models/RL_Agent.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Models/SFM_Agent.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Models/SFM_Agent.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SFM/SocialForceAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/SFM/SocialForceAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Charts/narrow_door.png" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Charts/narrow_door.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007/summary.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/agents_frame.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/agents_frame.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/collisions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/collisions.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/density_heatmap.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/density_heatmap.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/evacuation_curve.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/evacuation_curve.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/fundamental_diagram.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/fundamental_diagram.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/headway.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/headway.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/specific_flow_series.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/specific_flow_series.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/summary.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/throughput.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/throughput.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001/summary.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/agents_frame.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/agents_frame.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/collisions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/collisions.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/density_heatmap.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/density_heatmap.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/evacuation_curve.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/evacuation_curve.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/fundamental_diagram.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/fundamental_diagram.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/headway.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/headway.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/specific_flow_series.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/specific_flow_series.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/summary.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/throughput.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_SFM/throughput.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/crossing_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/crossing_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/narrow_door_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/narrow_door_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,7 +49,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$USER_HOME$/miniconda3/envs/mlagents/Lib/site-packages/pandas/core/series.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../miniconda3/envs/mlagents/Lib/site-packages/pandas/core/series.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="McpProjectServerCommands">
     <commands />
@@ -35,15 +70,17 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Piotr/CrowdEvacuation&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.documentation.PythonDocumentationConfigurable&quot;
   }
 }</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
+        <option value="bundled-python-sdk-1cd77e80b48f-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.32098.74" />
       </set>
     </attachedChunks>
   </component>
