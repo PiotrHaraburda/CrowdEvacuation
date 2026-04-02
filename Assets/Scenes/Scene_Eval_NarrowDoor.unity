@@ -1081,7 +1081,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelType: SFM
   scenarioId: NarrowDoor
-  runId: LC_001_SFM_cal_20
+  runId: LC_001_SFM_cal_23
   outputDirectory: Metrics
   densityMeasurementRadius: 0.5
   exitMeasurementPoint: {fileID: 1995288927}

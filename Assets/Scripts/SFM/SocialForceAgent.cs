@@ -19,8 +19,7 @@ namespace SFM
         public float mass = 80f; // (Helbing, Farkas & Vicsek 2000)
         public float radius = 0.2f; // (Helbing, Farkas & Vicsek 2000) use 0.3f; reduced to 0.2m based on Jülich
                                     // participant data (mean shoulder width 0.45m ± 0.04m, Boltes et al. 2023)
-
-
+                                    
         [Header("SFM parameters")]
         public float A = 2000f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
         public float B = 0.08f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated

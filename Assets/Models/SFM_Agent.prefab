@@ -175,8 +175,8 @@ MonoBehaviour:
   radius: 0.2
   A: 800
   B: 0.08
-  k: 60000
-  kappa: 120000
+  k: 120000
+  kappa: 240000
   tau: 0.3
   velocity: {x: 0, y: 0, z: 0}
   evacuated: 0
