@@ -48,18 +48,19 @@
     <Analyzer Include="C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.ai.inference@e760aa121ec7\Runtime\Core\SourceGenerator\SourceGenerators.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\RL\EvacuationAgent.cs" />
+    <Compile Include="Assets\Scripts\Ghost\GhostAgent.cs" />
     <Compile Include="Assets\Scripts\RL\TrainingEnvironmentManager.cs" />
     <Compile Include="Assets\Scripts\Utility\FreeLookCamera.cs" />
-    <Compile Include="Assets\Scripts\Agents\TrajectoryData.cs" />
-    <Compile Include="Assets\Scripts\Agents\GhostAgent.cs" />
+    <Compile Include="Assets\Scripts\RL\RLAgent.cs" />
     <Compile Include="Assets\Scripts\SFM\SocialForceAgent.cs" />
+    <Compile Include="Assets\Scripts\Ghost\GhostPlaybackManager.cs" />
     <Compile Include="Assets\Scripts\SFM\SFMManager.cs" />
     <Compile Include="Assets\Scripts\Metrics\MetricsData.cs" />
     <Compile Include="Assets\Scripts\Metrics\EvacuationMetricsLogger.cs" />
-    <Compile Include="Assets\Scripts\Agents\GhostPlaybackManager.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Metrics\MetricsAgent.cs" />
+    <Compile Include="Assets\Scripts\Utility\AgentConfig.cs" />
+    <Compile Include="Assets\Scripts\Ghost\TrajectoryData.cs" />
     <None Include="Library\PackageCache\com.unity.ai.navigation@eb5635ad590d\ValidationExceptions.json" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Chip.uss" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -17,8 +17,7 @@ namespace SFM
         public float desiredSpeed = 1.34f; // (Helbing & Molnar 1995)
         public float velocityClamp = 1.3f; // (Helbing & Molnar 1995)
         public float mass = 80f; // (Helbing, Farkas & Vicsek 2000)
-        public float radius = 0.2f; // (Helbing, Farkas & Vicsek 2000) use 0.3f; reduced to 0.2m based on Jülich
-                                    // participant data (mean shoulder width 0.45m ± 0.04m, Boltes et al. 2023)
+        public float radius = 0.23f; // half shoulder width (Weidmann 1993: 0.46m, Dreyfuss 1967)
                                     
         [Header("SFM parameters")]
         public float A = 2000f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
@@ -29,26 +28,32 @@ namespace SFM
 
         [Header("State")]
         [SerializeField] private Vector3 velocity;
-        [SerializeField] private bool evacuated;
 
-        private Rigidbody _rb;
+        internal MetricsAgent _ma;
         private static readonly List<SocialForceAgent> AllAgents = new();
         private static Collider[] _wallColliders;
         private static bool _wallsCached;
 
         private void Awake()
         {
-            _rb = GetComponent<Rigidbody>();
-            _rb.useGravity = false;
-            _rb.isKinematic = true;
+            var rb = GetComponent<Rigidbody>();
+            rb.useGravity = false;
+            rb.isKinematic = true;
+            _ma = GetComponent<MetricsAgent>();
         }
 
         private void OnEnable() => AllAgents.Add(this);
-        private void OnDisable() => AllAgents.Remove(this);
+
+        private void OnDisable()
+        {
+            AllAgents.Remove(this);
+            if (AllAgents.Count == 0)
+                _wallsCached = false;
+        }
 
         private void FixedUpdate()
         {
-            if (evacuated || goal == null) return;
+            if (!goal) return;
 
             var drivingAccel = ComputeDrivingForce();
             var interactionForce = ComputeAgentRepulsion() + ComputeWallRepulsion();
@@ -63,9 +68,7 @@ namespace SFM
             if (velocity.sqrMagnitude > 0.01f)
                 transform.rotation = Quaternion.LookRotation(velocity);
             
-            var ma = GetComponent<MetricsAgent>();
-            if (ma && !ma.IsEvacuated)
-                ma.CheckExit(transform.position);
+            _ma.CheckExit(transform.position);
         }
 
         private Vector3 ComputeDrivingForce()
@@ -82,7 +85,7 @@ namespace SFM
 
             foreach (var other in AllAgents)
             {
-                if (other == this || other.evacuated) continue;
+                if (other == this) continue;
 
                 var diff = transform.position - other.transform.position;
                 diff.y = 0f;
@@ -103,10 +106,7 @@ namespace SFM
                     var friction = kappa * overlap * dvt * tij;
                     repulsive += pushing + friction;
                     
-                    var ma = GetComponent<MetricsAgent>();
-                    var otherMa = other.GetComponent<MetricsAgent>();
-                    if (ma && otherMa)
-                        ma.ReportCollision("Agent", otherMa.agentId);
+                    _ma.ReportCollision("Agent", other._ma.agentId);
                 }
 
                 force += repulsive;
@@ -121,18 +121,18 @@ namespace SFM
             var pos = transform.position;
             pos.y = 0f;
 
-           if (!_wallsCached)
-           {
-               var walls = GameObject.FindGameObjectsWithTag("Wall");
-               _wallColliders = walls
-                   .Select(w => w.GetComponent<Collider>())
-                   .Where(c => c != null)
-                   .ToArray();
-               _wallsCached = true;
-           }
-           
-           foreach (var col in _wallColliders)
-           {
+            if (!_wallsCached)
+            {
+                var walls = GameObject.FindGameObjectsWithTag("Wall");
+                _wallColliders = walls
+                    .Select(w => w.GetComponent<Collider>())
+                    .Where(c => c != null)
+                    .ToArray();
+                _wallsCached = true;
+            }
+
+            foreach (var col in _wallColliders)
+            {
                 var closest = col.ClosestPoint(pos);
                 closest.y = 0f;
 
@@ -153,9 +153,7 @@ namespace SFM
                     var friction = kappa * overlap * vt * tio;
                     repulsive += pushing - friction;
                     
-                    var ma = GetComponent<MetricsAgent>();
-                    if (ma)
-                        ma.ReportCollision("Wall");
+                    _ma.ReportCollision("Wall");
                 }
 
                 force += repulsive;

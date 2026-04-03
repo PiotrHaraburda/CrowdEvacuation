@@ -100,10 +100,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4304dad7ab7b48bba30708f9d07fe308, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  metricsLogger: {fileID: 0}
-  posX: []
-  posZ: []
-  times: []
 --- !u!114 &3549760483679518285
 MonoBehaviour:
   m_ObjectHideFlags: 0

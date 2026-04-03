@@ -3,6 +3,7 @@ using System.Linq;
 using Metrics;
 using Unity.MLAgents;
 using UnityEngine;
+using Utility;
 
 namespace RL
 {
@@ -132,7 +133,7 @@ namespace RL
                     continue;
                 }
                 go.SetActive(true);
-                var agent = go.GetComponent<EvacuationAgent>();
+                var agent = go.GetComponent<RLAgent>();
                 if (agent)
                 {
                     agent.EndEpisode();
@@ -149,6 +150,7 @@ namespace RL
             ClearSpawned();
             RebuildWalls();
             RebuildExit();
+            MetricsAgent.ResetExitCache();
             SpawnObstacles();
             if (_threatActive)
             {
@@ -307,12 +309,17 @@ namespace RL
                 go.name = $"RL_Agent_{_nextAgentId}";
                 go.layer = LayerMask.NameToLayer("Agent");
 
-                var agent = go.GetComponent<EvacuationAgent>();
+                var agent = go.GetComponent<RLAgent>();
                 if (agent)
                 {
                     agent.goal = goal;
                     agent.trainingManager = this;
+                    agent.radius = AgentConfig.SampleRadius();
                 }
+
+                var capsule = go.GetComponent<CapsuleCollider>();
+                if (capsule)
+                    capsule.radius = agent.radius;
 
                 var ma = go.GetComponent<MetricsAgent>();
                 if (ma)

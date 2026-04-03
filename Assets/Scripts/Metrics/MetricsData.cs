@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Metrics
+﻿namespace Metrics
 {
     [System.Serializable]
     public class AgentFrameRecord
@@ -10,7 +8,6 @@ namespace Metrics
         public float posX;
         public float posZ;
         public float speed;
-        public float localDensity;
     }
 
     [System.Serializable]

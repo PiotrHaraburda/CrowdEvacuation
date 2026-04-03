@@ -844,12 +844,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfmAgentPrefab: {fileID: 793577169775243660, guid: 579bf81a64004614fbae60dfc4ab10b8, type: 3}
   metricsLogger: {fileID: 1607329508}
-  meanDesiredSpeed: 1.34
-  stdDesiredSpeed: 0.26
-  minDesiredSpeed: 0.5
-  maxDesiredSpeed: 2
-  meanRadius: 0.2
-  stdRadius: 0.02
   streams:
   - name: N - S
     goal: {fileID: 216961355}
@@ -859,7 +853,7 @@ MonoBehaviour:
     maxX: 2.1
     minZ: 6
     maxZ: 8
-    minSpawnDist: 0.41
+    minSpawnDist: 0.47
   - name: E - W
     goal: {fileID: 595133192}
     agentCount: 278
@@ -868,7 +862,7 @@ MonoBehaviour:
     maxX: 7
     minZ: -0.5
     maxZ: 2.4
-    minSpawnDist: 0.41
+    minSpawnDist: 0.47
 --- !u!4 &1091167414
 Transform:
   m_ObjectHideFlags: 0
@@ -1414,9 +1408,9 @@ MonoBehaviour:
   densityMeasurementRadius: 2
   exitMeasurementPoint: {fileID: 1406471064}
   exitMeasurementPoint2: {fileID: 1234098308}
-  scenarioAreaM2: 90
-  frameSampleInterval: 0.5
-  headwaySampleInterval: 1
+  scenarioAreaM2: 76
+  frameSampleInterval: 0.1
+  headwaySampleInterval: 0.25
   fdSampleInterval: 0.5
   heatmapSampleInterval: 2
   measureZoneMinX: -5
@@ -1426,8 +1420,6 @@ MonoBehaviour:
   totalAgents: 0
   evacuatedAgents: 0
   elapsedTime: 0
-  currentSpecificFlow: 0
-  currentExitDensity: 0
 --- !u!4 &1607329509
 Transform:
   m_ObjectHideFlags: 0

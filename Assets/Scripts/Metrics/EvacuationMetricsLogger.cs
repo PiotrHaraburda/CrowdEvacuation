@@ -32,12 +32,10 @@ namespace Metrics
         public float measureZoneMinZ = -1.2f;
         public float measureZoneMaxZ = 1.7f;
         
-        [Header("State")] 
+        [Header("State")]
         public int totalAgents;
-        [SerializeField] public int evacuatedAgents;
-        [SerializeField] public float elapsedTime;
-        [SerializeField] private float currentSpecificFlow;
-        [SerializeField] private float currentExitDensity;
+        public int evacuatedAgents;
+        public float elapsedTime;
 
         private float _simStart;
         private bool _running;
@@ -51,9 +49,6 @@ namespace Metrics
         private readonly Dictionary<int, int> _wallCollisions = new();
         private readonly Dictionary<int, int> _agentCollisions = new();
 
-        private readonly List<float> _specificFlowTimeSeries = new();
-        private readonly List<float> _exitDensityTimeSeries = new();
-        
         private readonly List<float> _evacuationCurve = new();
         private readonly List<(float time, float density, float speed)> _fundamentalDiagramRecords = new();
         private readonly List<(float time, float density, float flow)> _specificFlowTimeSeriesDetailed = new();
@@ -77,6 +72,15 @@ namespace Metrics
             _agents = FindObjectsOfType<MetricsAgent>(true);
             totalAgents = _agents.Length;
             Debug.Log($"[Metrics] Registered {totalAgents} agents");
+        }
+
+        public void RegisterAgent(MetricsAgent agent)
+        {
+            var list = _agents != null ? new List<MetricsAgent>(_agents) : new List<MetricsAgent>();
+            if (!list.Contains(agent))
+                list.Add(agent);
+            _agents = list.ToArray();
+            totalAgents = _agents.Length;
         }
 
         private void FixedUpdate()
@@ -118,8 +122,6 @@ namespace Metrics
                 ? MeasureLocalDensityCircle(active, exitMeasurementPoint2, densityMeasurementRadius) 
                 : 0f;
             var exitDensity = exitMeasurementPoint2 != null ? (d1 + d2) / 2f : d1;
-            currentExitDensity = exitDensity;
-            _exitDensityTimeSeries.Add(exitDensity);
 
             var count = active.Length;
 
@@ -137,8 +139,7 @@ namespace Metrics
                     time = elapsedTime,
                     posX = agent.transform.position.x,
                     posZ = agent.transform.position.z,
-                    speed = speed,
-                    localDensity = exitDensity
+                    speed = speed
                 });
             }
 
@@ -153,8 +154,6 @@ namespace Metrics
             ).ToArray();
             var exitSpeed = exitAgents.Length > 0 ? exitAgents.Average(a => a.GetLastSpeed()) : 0f;
             var specificFlow = exitDensity * exitSpeed;
-            currentSpecificFlow = specificFlow;
-            _specificFlowTimeSeries.Add(specificFlow);
             _specificFlowTimeSeriesDetailed.Add((elapsedTime, exitDensity, specificFlow));
         }
 
@@ -245,7 +244,7 @@ namespace Metrics
                 var localDensity = (nearbyCount + 1) / (Mathf.PI * measureRadius * measureRadius);
                 var localSpeed = (agent.GetLastSpeed() + speedSum) / (nearbyCount + 1);
 
-                if (localDensity > 0.5f)
+                if (localDensity > 0.1f)
                     _fundamentalDiagramRecords.Add((elapsedTime, localDensity, localSpeed));
             }
         }
@@ -277,7 +276,10 @@ namespace Metrics
 
         public void OnAgentEvacuated(int agentId, string exitId)
         {
-            if (!_evacuationTimes.TryAdd(agentId, elapsedTime)) return;
+            if (!_evacuationTimes.TryAdd(agentId, elapsedTime))
+            {
+                return;
+            }
             evacuatedAgents++;
 
             _throughputRecords.Add(new ThroughputRecord
@@ -303,23 +305,23 @@ namespace Metrics
                 {
                     _wallCollisions.TryAdd(agentId, 0);
                     _wallCollisions[agentId]++;
+                    _collisionRecords.Add(new CollisionRecord
+                    {
+                        time = elapsedTime, agentIdA = agentId, agentIdB = -1, type = "Wall"
+                    });
                     break;
                 }
                 case "Agent" when otherId > agentId:
                 {
                     _agentCollisions.TryAdd(agentId, 0);
                     _agentCollisions[agentId]++;
+                    _collisionRecords.Add(new CollisionRecord
+                    {
+                        time = elapsedTime, agentIdA = agentId, agentIdB = otherId, type = "Agent"
+                    });
                     break;
                 }
             }
-
-            _collisionRecords.Add(new CollisionRecord
-            {
-                time = elapsedTime,
-                agentIdA = agentId,
-                agentIdB = otherId,
-                type = type
-            });
         }
 
         public void ForceExport()
@@ -354,10 +356,10 @@ namespace Metrics
 
         private void WriteAgentsCsv(string dir)
         {
-            var sb = new StringBuilder("agentId;time;posX;posZ;speed;localDensity\n");
+            var sb = new StringBuilder("agentId;time;posX;posZ;speed\n");
             foreach (var r in _frameRecords)
                 sb.AppendLine(
-                    $"{r.agentId};{r.time:F4};{r.posX:F4};{r.posZ:F4};{r.speed:F4};{r.localDensity:F4}");
+                    $"{r.agentId};{r.time:F4};{r.posX:F4};{r.posZ:F4};{r.speed:F4}");
             File.WriteAllText(Path.Combine(dir, "agents_frame.csv"), sb.ToString());
         }
 
@@ -436,15 +438,17 @@ namespace Metrics
                 : 0f;
             var maxSpeed = allSpeeds.Count > 0 ? allSpeeds.Max() : 0f;
 
-            var meanExitDensity = _exitDensityTimeSeries.Count > 0 ? _exitDensityTimeSeries.Average() : 0f;
-            var peakExitDensity = _exitDensityTimeSeries.Count > 0 ? _exitDensityTimeSeries.Max() : 0f;
+            var exitDensities = _specificFlowTimeSeriesDetailed.Select(r => r.density).ToList();
+            var meanExitDensity = exitDensities.Count > 0 ? exitDensities.Average() : 0f;
+            var peakExitDensity = exitDensities.Count > 0 ? exitDensities.Max() : 0f;
             var meanGlobalDensity = _frameRecords.Count > 0
                 ? _frameRecords.GroupBy(r => r.time).Average(g => g.Count() / scenarioAreaM2)
                 : 0f;
 
-            var meanFlow = _specificFlowTimeSeries.Count > 0 ? _specificFlowTimeSeries.Average() : 0f;
-            var peakFlow = _specificFlowTimeSeries.Count > 0 
-                ? _specificFlowTimeSeries.Where(f => f < 10f).DefaultIfEmpty(0f).Max() 
+            var flows = _specificFlowTimeSeriesDetailed.Select(r => r.flow).ToList();
+            var meanFlow = flows.Count > 0 ? flows.Average() : 0f;
+            var peakFlow = flows.Count > 0
+                ? flows.Where(f => f < 10f).DefaultIfEmpty(0f).Max()
                 : 0f;
             var throughput = rset100 > 0 ? (float)totalAgents / rset100 : 0f;
             var throughputByExit = _throughputRecords
@@ -494,22 +498,32 @@ namespace Metrics
             return sorted[idx];
         }
         
-        public void CheckExitCrossing(MetricsAgent ma, Vector3 pos)
+        public bool CheckExitCrossing(MetricsAgent ma, Vector3 pos)
         {
-            if (ma.IsEvacuated) return;
+            if (ma.IsEvacuated) return false;
 
             var exitId = scenarioId switch
             {
-                "NarrowDoor" when pos.z < -1.1f => "Exit",
-                "Crossing90" when pos.z < -4.5f => "Exit_South",
-                "Crossing90" when pos.x < -5.0f => "Exit_West",
+                "NarrowDoor" when pos.z < -1.1f => "ExitZone",
+                "Crossing90" when pos.z < -4.25f => "Exit_South",
+                "Crossing90" when pos.x < -4.75f => "Exit_West",
                 _ => null
             };
 
-            if (exitId == null) return;
+            if (exitId == null) return false;
 
             ma.MarkEvacuated();
             OnAgentEvacuated(ma.agentId, exitId);
+            return true;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Debug.Log($"Evacuated: {evacuatedAgents} / {totalAgents}");
+                ForceExport();
+            }
         }
 
         private void OnGUI()

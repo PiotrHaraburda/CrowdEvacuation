@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Metrics;
 using UnityEngine;
+using Utility;
 using Random = UnityEngine.Random;
 
 namespace SFM
@@ -15,14 +16,6 @@ namespace SFM
 
         [Header("References")]
         public EvacuationMetricsLogger metricsLogger;
-
-        [Header("Agent variation")]
-        public float meanDesiredSpeed = 1.34f; // (Weidmann 1993)
-        public float stdDesiredSpeed = 0.26f; // (Weidmann 1993)
-        public float minDesiredSpeed = 0.5f;
-        public float maxDesiredSpeed = 2.0f;
-        public float meanRadius = 0.2f;
-        public float stdRadius = 0.02f;
 
         [Header("Spawn streams")]
         public SpawnStream[] streams;
@@ -39,15 +32,12 @@ namespace SFM
             public float spawnRate;
             public float minX, maxX;
             public float minZ, maxZ;
-            public float minSpawnDist = 0.41f;
+            public float minSpawnDist = 0.47f;
         }
 
         private void Start()
         {
-            var totalAgents = streams.Sum(stream => stream.agentCount);
-
-            if (metricsLogger != null)
-                metricsLogger.totalAgents = totalAgents;
+            metricsLogger.totalAgents = streams.Sum(s => s.agentCount);
 
             foreach (var stream in streams)
             {
@@ -67,8 +57,7 @@ namespace SFM
                     SpawnAgent(pos.Value, stream.goal);
             }
 
-            if (metricsLogger != null)
-                metricsLogger.RegisterAgents();
+            metricsLogger.RegisterAgents();
         }
 
         private IEnumerator SpawnGradually(SpawnStream stream)
@@ -111,10 +100,7 @@ namespace SFM
         {
             foreach (var agent in _agents)
             {
-                if (!agent)
-                {
-                    continue;
-                }
+                if (!agent) continue;
                 if (Vector3.Distance(agent.transform.position, pos) < minDist)
                     return false;
             }
@@ -128,44 +114,18 @@ namespace SFM
 
             var agent = go.GetComponent<SocialForceAgent>();
             agent.goal = agentGoal;
-            agent.desiredSpeed = SampleGaussian(meanDesiredSpeed, stdDesiredSpeed, minDesiredSpeed, maxDesiredSpeed);
-            agent.radius = SampleGaussian(meanRadius, stdRadius, 0.15f, 0.25f);
+            agent.desiredSpeed = AgentConfig.SampleDesiredSpeed();
+            agent.radius = AgentConfig.SampleRadius();
 
-            var capsule = go.GetComponent<CapsuleCollider>();
-            if (capsule)
-            {
-                capsule.radius = agent.radius;
-            }
+            go.GetComponent<CapsuleCollider>().radius = agent.radius;
 
             var ma = go.GetComponent<MetricsAgent>();
-            if (ma)
-            {
-                ma.agentId = _nextId;
-                if (metricsLogger)
-                    ma.RegisterLogger(metricsLogger);
-            }
+            ma.agentId = _nextId;
+            ma.RegisterLogger(metricsLogger);
+            metricsLogger.RegisterAgent(ma);
 
             _agents.Add(agent);
             _nextId++;
-            metricsLogger.RegisterAgents();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                var logger = FindObjectOfType<EvacuationMetricsLogger>();
-                Debug.Log($"Evacuated: {logger?.evacuatedAgents} / {logger?.totalAgents}");
-                logger?.ForceExport();
-            }
-        }
-
-        private static float SampleGaussian(float mean, float std, float min, float max)
-        {
-            var u1 = Random.value;
-            var u2 = Random.value;
-            var z = Mathf.Sqrt(-2f * Mathf.Log(Mathf.Max(u1, 1e-6f))) * Mathf.Cos(2f * Mathf.PI * u2);
-            return Mathf.Clamp(mean + std * z, min, max);
         }
     }
 }

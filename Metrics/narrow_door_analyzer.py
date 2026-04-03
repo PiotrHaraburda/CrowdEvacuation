@@ -11,8 +11,6 @@ plt.rcParams['axes.labelsize'] = 9
 base = './NarrowDoor'
 C_GHOST = '#2196F3'
 C_SFM = '#FF5722'
-C_GHOST_LIGHT = '#90CAF9'
-C_SFM_LIGHT = '#FFAB91'
 
 
 def load_csv(path):
@@ -49,15 +47,16 @@ gs = gridspec.GridSpec(5, 3, hspace=0.4, wspace=0.35)
 ax = fig.add_subplot(gs[0, 0])
 ax.plot(ghost['ec']['time'], ghost['ec']['evacuated_count'], color=C_GHOST, linewidth=2, label='Ghost (empirical)')
 ax.plot(sfm['ec']['time'], sfm['ec']['evacuated_count'], color=C_SFM, linewidth=2, label='SFM (Helbing 2000)')
-ax.axhline(y=93 * 0.5, color='gray', linestyle=':', alpha=0.5, label='50% evacuated')
-ax.axhline(y=93 * 0.95, color='gray', linestyle='--', alpha=0.5, label='95% evacuated')
+total = max(ghost['ec']['evacuated_count'].max(), sfm['ec']['evacuated_count'].max())
+ax.axhline(y=total * 0.5, color='gray', linestyle=':', alpha=0.5, label='50% evacuated')
+ax.axhline(y=total * 0.95, color='gray', linestyle='--', alpha=0.5, label='95% evacuated')
 ax.set_xlabel('Time [s]')
 ax.set_ylabel('Evacuated agents')
 ax.set_title('(a) Evacuation Curve')
 ax.legend(fontsize=7)
 ax.grid(True, alpha=0.3)
 ax.set_xlim(0)
-ax.set_ylim(0, 96)
+ax.set_ylim(0, total * 1.03)
 
 # (b) Throughput timeline
 ax = fig.add_subplot(gs[0, 1])

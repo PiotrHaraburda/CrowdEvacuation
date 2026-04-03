@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Metrics
 {
@@ -58,48 +58,37 @@ namespace Metrics
 
         public void ReportCollision(string type, int otherId = -1)
         {
-            if (IsEvacuated || !_logger)
+            if (IsEvacuated)
             {
                 return;
             }
             _logger.OnAgentCollision(agentId, type, otherId);
         }
 
-        public void CheckExit(Vector3 pos)
+        public bool CheckExit(Vector3 pos, bool deactivate = true)
         {
-            if (IsEvacuated)
+            if (IsEvacuated) return false;
+
+            if (_logger.CheckExitCrossing(this, pos))
             {
-                return;
-            }
-    
-            if (_exitColliders == null)
-            {
-                var exits = GameObject.FindGameObjectsWithTag("Exit");
-                _exitColliders = new Collider[exits.Length];
-                for (var i = 0; i < exits.Length; i++)
-                    _exitColliders[i] = exits[i].GetComponent<Collider>();
+                if (deactivate) 
+                    gameObject.SetActive(false);
+                return true;
             }
 
-            foreach (var col in _exitColliders)
-            {
-                if (!col || !col.bounds.Contains(pos))
-                {
-                    continue;
-                }
-                IsEvacuated = true;
-                _logger?.OnAgentEvacuated(agentId, col.gameObject.name);
-                gameObject.SetActive(false);
-                return;
-            }
-        }
-        
-        public bool CheckExitRL(Vector3 pos)
-        {
-            if (IsEvacuated)
-            {
+            var exitCol = FindOverlappingExit(pos);
+            if (!exitCol) 
                 return false;
-            }
 
+            MarkEvacuated();
+            _logger.OnAgentEvacuated(agentId, exitCol.gameObject.name);
+            if (deactivate) 
+                gameObject.SetActive(false);
+            return true;
+        }
+
+        private static Collider FindOverlappingExit(Vector3 pos)
+        {
             if (_exitColliders == null)
             {
                 var exits = GameObject.FindGameObjectsWithTag("Exit");
@@ -110,17 +99,11 @@ namespace Metrics
 
             foreach (var col in _exitColliders)
             {
-                if (!col) continue;
-                var contains = col.bounds.Contains(pos);
-                if (contains)
-                {
-                    IsEvacuated = true;
-                    _logger?.OnAgentEvacuated(agentId, col.gameObject.name);
-                    return true;
-                }
+                if (col && col.bounds.Contains(pos))
+                    return col;
             }
 
-            return false;
+            return null;
         }
         
         public void ResetState()
@@ -130,6 +113,10 @@ namespace Metrics
             _prevSpeedTime = Time.time;
             _prevSpeed = 0f;
             _useOverrideSpeed = false;
+        }
+
+        public static void ResetExitCache()
+        {
             _exitColliders = null;
         }
     }
