@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Metrics;
 using UnityEngine;
-using System.Linq;
+using Utility;
 
 namespace SFM
 {
@@ -13,12 +15,9 @@ namespace SFM
         [Header("Goal")]
         public Transform goal;
 
-        [Header("Agent properties")]
-        public float desiredSpeed = 1.34f; // (Helbing & Molnar 1995)
-        public float velocityClamp = 1.3f; // (Helbing & Molnar 1995)
-        public float mass = 80f; // (Helbing, Farkas & Vicsek 2000)
-        public float radius = 0.23f; // half shoulder width (Weidmann 1993: 0.46m, Dreyfuss 1967)
-                                    
+        [NonSerialized] public float DesiredSpeed;
+        [NonSerialized] public float Radius;
+
         [Header("SFM parameters")]
         public float A = 2000f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
         public float B = 0.08f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
@@ -29,7 +28,7 @@ namespace SFM
         [Header("State")]
         [SerializeField] private Vector3 velocity;
 
-        internal MetricsAgent _ma;
+        private MetricsAgent _ma;
         private static readonly List<SocialForceAgent> AllAgents = new();
         private static Collider[] _wallColliders;
         private static bool _wallsCached;
@@ -58,10 +57,10 @@ namespace SFM
             var drivingAccel = ComputeDrivingForce();
             var interactionForce = ComputeAgentRepulsion() + ComputeWallRepulsion();
 
-            velocity += (drivingAccel + interactionForce / mass) * Time.fixedDeltaTime;
+            velocity += (drivingAccel + interactionForce / AgentConfig.Mass) * Time.fixedDeltaTime;
 
-            if (velocity.magnitude > desiredSpeed * velocityClamp)
-                velocity = velocity.normalized * (desiredSpeed * velocityClamp);
+            if (velocity.magnitude > DesiredSpeed * AgentConfig.VelocityClamp)
+                velocity = velocity.normalized * (DesiredSpeed * AgentConfig.VelocityClamp);
             
             transform.position += velocity * Time.fixedDeltaTime;
 
@@ -75,7 +74,7 @@ namespace SFM
         {
             var dir = (goal.position - transform.position).normalized;
             dir.y = 0f;
-            var desiredVelocity = dir * desiredSpeed;
+            var desiredVelocity = dir * DesiredSpeed;
             return (desiredVelocity - velocity) / tau;
         }
 
@@ -94,7 +93,7 @@ namespace SFM
 
                 var nij = diff / dist;
                 var tij = new Vector3(-nij.z, 0f, nij.x);
-                var rij = radius + other.radius;
+                var rij = Radius + other.Radius;
                 var overlap = rij - dist;
                 
                 var repulsive = A * Mathf.Exp(overlap / B) * nij;
@@ -142,7 +141,7 @@ namespace SFM
 
                 var nio = diff.normalized;
                 var tio = new Vector3(-nio.z, 0f, nio.x);
-                var overlap = radius - dist;
+                var overlap = Radius - dist;
 
                 var repulsive = A * Mathf.Exp(overlap / B) * nio;
 

@@ -32,7 +32,7 @@ namespace SFM
             public float spawnRate;
             public float minX, maxX;
             public float minZ, maxZ;
-            public float minSpawnDist = 0.47f;
+            public float minSpawnDist = 0.38f;
         }
 
         private void Start()
@@ -114,10 +114,13 @@ namespace SFM
 
             var agent = go.GetComponent<SocialForceAgent>();
             agent.goal = agentGoal;
-            agent.desiredSpeed = AgentConfig.SampleDesiredSpeed();
-            agent.radius = AgentConfig.SampleRadius();
+            agent.DesiredSpeed = AgentConfig.SampleDesiredSpeed();
+            agent.Radius = AgentConfig.SampleRadius();
 
-            go.GetComponent<CapsuleCollider>().radius = agent.radius;
+            var d = agent.Radius * 2f;
+            go.transform.localScale = new Vector3(d, go.transform.localScale.y, d);
+            var capsule = go.GetComponent<CapsuleCollider>();
+            capsule.isTrigger = true;
 
             var ma = go.GetComponent<MetricsAgent>();
             ma.agentId = _nextId;

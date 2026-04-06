@@ -151,7 +151,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -206,11 +206,7 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 15000
-  maxSpeed: 1.74
-  maxForce: 214
   maxRotation: 180
-  mass: 80
-  radius: 0.2
   goal: {fileID: 0}
   goalReward: 1
   wallCollisionPenalty: -0.005

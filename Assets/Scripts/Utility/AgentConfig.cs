@@ -4,17 +4,26 @@ namespace Utility
 {
     public static class AgentConfig
     {
-        // Weidmann 1993 (Dreyfuss 1967): shoulder width 0.46m, 97.5th pctl 0.50m
-        private const float MeanRadius = 0.23f;
-        private const float StdRadius = 0.01f;
-        private const float MinRadius = 0.19f;
-        private const float MaxRadius = 0.27f;
+        // Garcimartin et al. 2017: d=0.37m shoulder-to-shoulder
+        public const float MeanRadius = 0.185f;
+        private const float StdRadius = 0.015f;
+        private const float MinRadius = 0.15f;
+        private const float MaxRadius = 0.22f;
 
         // Weidmann 1993: desired walking speed 1.34 m/s +- 0.26 m/s
         private const float MeanDesiredSpeed = 1.34f;
         private const float StdDesiredSpeed = 0.26f;
         private const float MinDesiredSpeed = 0.5f;
         private const float MaxDesiredSpeed = 2.0f;
+
+        // Helbing, Farkas & Vicsek 2000
+        public const float Mass = 80f;
+
+        // Helbing & Molnar 1995
+        public const float VelocityClamp = 1.3f;
+        public const float MaxSpeed = MeanDesiredSpeed * VelocityClamp; // 1.742 m/s
+        public const float DefaultTau = 0.5f;
+        public const float MaxForce = Mass * MeanDesiredSpeed / DefaultTau; // 214.4 N
 
         public static float SampleRadius()
         {

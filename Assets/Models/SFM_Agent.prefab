@@ -148,7 +148,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -169,12 +169,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goal: {fileID: 0}
-  desiredSpeed: 1.34
-  velocityClamp: 1.3
-  mass: 80
-  radius: 0.2
   A: 2000
-  B: 0.08
+  B: 0.16
   k: 120000
   kappa: 240000
   tau: 0.5

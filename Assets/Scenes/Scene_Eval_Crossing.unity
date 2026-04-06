@@ -853,7 +853,7 @@ MonoBehaviour:
     maxX: 2.1
     minZ: 6
     maxZ: 8
-    minSpawnDist: 0.47
+    minSpawnDist: 0.38
   - name: E - W
     goal: {fileID: 595133192}
     agentCount: 278
@@ -862,7 +862,7 @@ MonoBehaviour:
     maxX: 7
     minZ: -0.5
     maxZ: 2.4
-    minSpawnDist: 0.47
+    minSpawnDist: 0.38
 --- !u!4 &1091167414
 Transform:
   m_ObjectHideFlags: 0
@@ -1403,7 +1403,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelType: SFM
   scenarioId: Crossing90
-  runId: D_007_SFM_cal_04
+  runId: D_007_SFM_cal_26
   outputDirectory: Metrics
   densityMeasurementRadius: 2
   exitMeasurementPoint: {fileID: 1406471064}

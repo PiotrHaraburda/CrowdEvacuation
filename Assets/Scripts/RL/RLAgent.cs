@@ -1,20 +1,19 @@
-﻿using Metrics;
+﻿using System;
+using Metrics;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
+using Utility;
 
 namespace RL
 {
     [RequireComponent(typeof(MetricsAgent))]
     public class RLAgent : Agent
     {
-        [Header("Movement")] 
-        public float maxSpeed = 1.74f; // 1.74 = 1.34 * 1.3 from Weldmann 1993
-        public float maxForce = 214f; // 80kg * 1.34 m/s / 0.5s - same as SFM Helbing 2000
-        public float maxRotation = 180f; // per second
-        public float mass = 80f;
-        public float radius = 0.23f;
+        [Header("Movement")]
+        public float maxRotation = 180f;
+        [NonSerialized] public float Radius;
 
         [Header("Goal")] 
         public Transform goal;
@@ -94,11 +93,11 @@ namespace RL
                 sensor.AddObservation(0f);
             }
 
-            sensor.AddObservation(_velocity.magnitude / maxSpeed);
+            sensor.AddObservation(_velocity.magnitude / AgentConfig.MaxSpeed);
 
             var localVel = transform.InverseTransformDirection(_velocity);
-            sensor.AddObservation(localVel.x / maxSpeed);
-            sensor.AddObservation(localVel.z / maxSpeed);
+            sensor.AddObservation(localVel.x / AgentConfig.MaxSpeed);
+            sensor.AddObservation(localVel.z / AgentConfig.MaxSpeed);
         }
 
         // Actions: continuous [0]=force forward/back, [1]=rotation
@@ -110,12 +109,12 @@ namespace RL
             var rotation = rotationAction * maxRotation * Time.fixedDeltaTime;
             transform.Rotate(0f, rotation, 0f);
 
-            var force = transform.forward * (forceAction * maxForce);
-            var acceleration = force / mass;
+            var force = transform.forward * (forceAction * AgentConfig.MaxForce);
+            var acceleration = force / AgentConfig.Mass;
             _velocity += acceleration * Time.fixedDeltaTime;
 
-            if (_velocity.magnitude > maxSpeed)
-                _velocity = _velocity.normalized * maxSpeed;
+            if (_velocity.magnitude > AgentConfig.MaxSpeed)
+                _velocity = _velocity.normalized * AgentConfig.MaxSpeed;
 
             _velocity *= 1f - 0.5f * Time.fixedDeltaTime;
 
@@ -136,7 +135,7 @@ namespace RL
             var wallHit = false;
             var agentHit = false;
             var overlapCount = Physics.OverlapSphereNonAlloc(
-                transform.position + Vector3.up * 0.5f, radius * 2f, _overlapBuffer, _overlapMask);
+                transform.position + Vector3.up * 0.5f, Radius * 2f, _overlapBuffer, _overlapMask);
 
             for (var i = 0; i < overlapCount; i++)
             {
@@ -170,7 +169,7 @@ namespace RL
 
             AddReward(timePenalty);
 
-            if (Physics.CheckSphere(transform.position, radius, _hazardMask))
+            if (Physics.CheckSphere(transform.position, Radius, _hazardMask))
                 AddReward(hazardDirectPenalty);
             else if (Physics.CheckSphere(transform.position, hazardDetectionRadius, _hazardMask))
                 AddReward(hazardPenalty);
@@ -196,7 +195,7 @@ namespace RL
         {
             var pos = transform.position;
             var wallCount = Physics.OverlapSphereNonAlloc(
-                pos + Vector3.up * 0.5f, radius, _wallBuffer, _wallMask);
+                pos + Vector3.up * 0.5f, Radius, _wallBuffer, _wallMask);
 
             for (var i = 0; i < wallCount; i++)
             {
@@ -206,10 +205,10 @@ namespace RL
                 var diff = pos - closest;
                 var dist = diff.magnitude;
 
-                if (dist < radius && dist > 0.001f)
+                if (dist < Radius && dist > 0.001f)
                 {
                     var normal = diff.normalized;
-                    var pushback = normal * (radius - dist);
+                    var pushback = normal * (Radius - dist);
                     transform.position += pushback;
 
                     var velIntoWall = Vector3.Dot(_velocity, -normal);
@@ -221,7 +220,7 @@ namespace RL
                     var wallCenter = col.bounds.center;
                     wallCenter.y = pos.y;
                     var away = (pos - wallCenter).normalized;
-                    transform.position += away * radius;
+                    transform.position += away * Radius;
                     _velocity = Vector3.zero;
                 }
             }

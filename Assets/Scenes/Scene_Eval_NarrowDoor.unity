@@ -459,7 +459,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &262200796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
     maxX: 3.5
     minZ: -0.5
     maxZ: 4
-    minSpawnDist: 0.41
+    minSpawnDist: 0.38
 --- !u!4 &262200797
 Transform:
   m_ObjectHideFlags: 0
@@ -1073,14 +1073,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6341b28d9c34a958cd95eb910b24909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: Ghost
+  modelType: SFM
   scenarioId: NarrowDoor
-  runId: LC_001
+  runId: LC_001_SFM_cal_28
   outputDirectory: Metrics
   densityMeasurementRadius: 0.5
   exitMeasurementPoint: {fileID: 1995288927}
   exitMeasurementPoint2: {fileID: 0}
-  scenarioAreaM2: 11
+  scenarioAreaM2: 15
   frameSampleInterval: 0.1
   headwaySampleInterval: 0.25
   fdSampleInterval: 0.5
@@ -1339,7 +1339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1933964278
 MonoBehaviour:
   m_ObjectHideFlags: 0

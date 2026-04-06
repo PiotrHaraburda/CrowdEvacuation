@@ -314,12 +314,12 @@ namespace RL
                 {
                     agent.goal = goal;
                     agent.trainingManager = this;
-                    agent.radius = AgentConfig.SampleRadius();
+                    agent.Radius = AgentConfig.SampleRadius();
                 }
 
-                var capsule = go.GetComponent<CapsuleCollider>();
-                if (capsule)
-                    capsule.radius = agent.radius;
+                var d = agent.Radius * 2f;
+                go.transform.localScale = new Vector3(d, go.transform.localScale.y, d);
+                go.GetComponent<CapsuleCollider>().isTrigger = true;
 
                 var ma = go.GetComponent<MetricsAgent>();
                 if (ma)
