@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Metrics;
 using Unity.MLAgents;
@@ -9,62 +9,53 @@ namespace RL
 {
     public class TrainingEnvironmentManager : MonoBehaviour
     {
-        [Header("Prefabs")] 
+        [Header("Prefabs")]
         public GameObject agentPrefab;
         public GameObject obstaclePrefab;
         public GameObject hazardPrefab;
 
-        [Header("Arena geometry")] 
+        [Header("Arena")]
         public float minArenaSize = 6f;
         public float arenaScalePerAgent = 3f;
         public float wallHeight = 2f;
         public float wallThickness = 0.2f;
-
-        [Header("Exit")]
         public float exitDepthBehind = 3f;
 
-        [Header("Goal")] 
-        public Transform goal;
-
-        [Header("Metrics")] 
-        public EvacuationMetricsLogger metricsLogger;
+        [Header("Goals")]
+        public Transform goalPrimary;
+        public Transform goalSecondary;
 
         [Header("Defaults (overridden by curriculum)")]
         public int defaultNumAgents = 1;
-        public int defaultNumObstacles;
         public float defaultCorridorWidth = 4f;
         public bool defaultThreatActive;
 
         private readonly List<GameObject> _spawnedAgents = new();
         private readonly List<GameObject> _spawnedObstacles = new();
-        private GameObject _spawnedHazard;
         private readonly List<GameObject> _walls = new();
-        private GameObject _exitZone;
+        private GameObject _spawnedHazard;
+        private GameObject _exitPrimary;
+        private GameObject _exitSecondary;
 
         private float _arenaWidth;
         private float _arenaDepth;
-
         private int _numAgents;
         private int _numObstacles;
         private float _corridorWidth;
         private bool _threatActive;
+        private bool _counterflowActive;
 
-        private bool _hazardSpawned;
-        private float _hazardDespawnTime;
         private int _nextAgentId = 1;
-
-        private int _agentsEvacuated;
-        private int _agentsTimedOut;
+        private int _agentsDone;
         private bool _pendingFullReset;
-
         private float _nextCurriculumCheck;
-        
+        private float _hazardDespawnTime;
+        private float _hazardSpawnTime;
 
         private void Start()
         {
-            _arenaWidth = minArenaSize;
-            _arenaDepth = minArenaSize;
-            CreateExitZone();
+            _exitPrimary = CreateExitZone("ExitPrimary");
+            _exitSecondary = CreateExitZone("ExitSecondary");
             ResetEnvironment();
         }
 
@@ -85,16 +76,13 @@ namespace RL
                 var newThreat = envParams.GetWithDefault("threat_active", 0f) > 0.5f;
 
                 if (Mathf.Abs(newNumAgents - _numAgents) > 3 || newThreat != _threatActive)
-                {
                     _pendingFullReset = true;
-                }
             }
 
-            if (_threatActive && _hazardSpawned && _spawnedHazard && Time.time > _hazardDespawnTime)
+            if (_threatActive && _spawnedHazard && Time.time > _hazardDespawnTime)
             {
                 Destroy(_spawnedHazard);
                 _spawnedHazard = null;
-                _hazardSpawned = false;
                 SpawnHazard();
             }
         }
@@ -107,37 +95,25 @@ namespace RL
         public void OnAgentEvacuated(GameObject agentGo)
         {
             agentGo.SetActive(false);
-            _agentsEvacuated++;
-            CheckAllDone();
+            _agentsDone++;
+            if (_agentsDone >= _numAgents)
+                _pendingFullReset = true;
         }
 
         public void OnAgentTimedOut(GameObject agentGo)
         {
-            _agentsTimedOut++;
-            CheckAllDone();
-        }
-
-        private void CheckAllDone()
-        {
-            if (_agentsEvacuated + _agentsTimedOut >= _numAgents)
+            _agentsDone++;
+            if (_agentsDone >= _numAgents)
                 _pendingFullReset = true;
         }
 
         private void PerformFullReset()
         {
-            var agentsCopy = new List<GameObject>(_spawnedAgents);
-            foreach (var go in agentsCopy)
+            foreach (var go in _spawnedAgents)
             {
-                if (!go)
-                {
-                    continue;
-                }
+                if (!go) continue;
                 go.SetActive(true);
-                var agent = go.GetComponent<RLAgent>();
-                if (agent)
-                {
-                    agent.EndEpisode();
-                }
+                go.GetComponent<RLAgent>()?.EndEpisode();
             }
 
             ResetEnvironment();
@@ -146,21 +122,21 @@ namespace RL
         private void ResetEnvironment()
         {
             ReadCurriculumParameters();
+            _counterflowActive = _numAgents >= 10 && Random.value > 0.5f;
             ComputeArenaSize();
+            _numObstacles = _numAgents <= 1 ? 0 : Mathf.RoundToInt(_arenaWidth * _arenaDepth / 20f);
+
             ClearSpawned();
-            RebuildWalls();
-            RebuildExit();
+            ClearWalls();
+            BuildWalls();
+            BuildExits();
             MetricsAgent.ResetExitCache();
             SpawnObstacles();
-            if (_threatActive)
-            {
+            if (_threatActive) 
                 SpawnHazard();
-            }
             SpawnAgents();
-            SetupMetrics();
 
-            _agentsEvacuated = 0;
-            _agentsTimedOut = 0;
+            _agentsDone = 0;
             _pendingFullReset = false;
         }
 
@@ -168,72 +144,101 @@ namespace RL
         {
             var envParams = Academy.Instance.EnvironmentParameters;
             _numAgents = Mathf.RoundToInt(envParams.GetWithDefault("num_agents", defaultNumAgents));
-            _numObstacles = Mathf.RoundToInt(envParams.GetWithDefault("num_obstacles", defaultNumObstacles));
             _corridorWidth = envParams.GetWithDefault("corridor_width", defaultCorridorWidth);
             _threatActive = envParams.GetWithDefault("threat_active", defaultThreatActive ? 1f : 0f) > 0.5f;
         }
 
         private void ComputeArenaSize()
         {
-            var computed = Mathf.Sqrt(_numAgents) * arenaScalePerAgent;
-            _arenaWidth = Mathf.Max(minArenaSize, computed);
-            _arenaDepth = _arenaWidth;
+            var baseSize = Mathf.Max(minArenaSize, Mathf.Sqrt(_numAgents) * arenaScalePerAgent);
+
+            if (_counterflowActive)
+            {
+                _arenaWidth = baseSize;
+                _arenaDepth = 4f;
+            }
+            else
+            {
+                _arenaWidth = baseSize;
+                _arenaDepth = baseSize;
+            }
         }
 
-        private void RebuildWalls()
+        private void BuildWalls()
         {
-            ClearWalls();
-
             var halfW = _arenaWidth / 2f;
             var halfD = _arenaDepth / 2f;
             var cy = wallHeight / 2f;
 
-            CreateWall(new Vector3(0, cy, halfD),
-                new Vector3(_arenaWidth, wallHeight, wallThickness), "Wall_N");
-            CreateWall(new Vector3(halfW, cy, 0),
-                new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_E");
-            CreateWall(new Vector3(-halfW, cy, 0),
-                new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_W");
+            CreateWall(new Vector3(0, cy, halfD), new Vector3(_arenaWidth, wallHeight, wallThickness), "Wall_N");
+
+            if (_counterflowActive)
+            {
+                CreateWall(new Vector3(0, cy, -halfD), new Vector3(_arenaWidth, wallHeight, wallThickness), "Wall_S");
+                BuildExitWall(new Vector3(-halfW, cy, 0), wallThickness, _arenaDepth, _corridorWidth, "Wall_W");
+                BuildExitWall(new Vector3(halfW, cy, 0), wallThickness, _arenaDepth, _corridorWidth, "Wall_E");
+            }
+            else
+            {
+                CreateWall(new Vector3(halfW, cy, 0), new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_E");
+                CreateWall(new Vector3(-halfW, cy, 0), new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_W");
+                BuildExitWall(new Vector3(0, cy, -halfD), _arenaWidth, wallThickness, _corridorWidth, "Wall_S");
+            }
         }
 
-        private void RebuildExit()
+        private void BuildExitWall(Vector3 center, float totalWidth, float totalDepth, float doorWidth, string namePrefix)
         {
-            _walls.RemoveAll(w =>
-            {
-                if (!w || !w.name.StartsWith("Wall_S")) return false;
-                Destroy(w);
-                return true;
-            });
+            var isVertical = totalDepth > totalWidth;
+            var totalLength = isVertical ? totalDepth : totalWidth;
+            var halfDoor = doorWidth / 2f;
+            var sideLength = (totalLength - doorWidth) / 2f;
 
+            if (sideLength <= 0.01f) 
+                return;
+
+            if (isVertical)
+            {
+                var offset = sideLength / 2f + halfDoor;
+                CreateWall(center + new Vector3(0, 0, offset),
+                    new Vector3(totalWidth, wallHeight, sideLength), namePrefix + "_Top");
+                CreateWall(center + new Vector3(0, 0, -offset),
+                    new Vector3(totalWidth, wallHeight, sideLength), namePrefix + "_Bot");
+            }
+            else
+            {
+                var offset = sideLength / 2f + halfDoor;
+                CreateWall(center + new Vector3(-offset, 0, 0),
+                    new Vector3(sideLength, wallHeight, totalDepth), namePrefix + "_Left");
+                CreateWall(center + new Vector3(offset, 0, 0),
+                    new Vector3(sideLength, wallHeight, totalDepth), namePrefix + "_Right");
+            }
+        }
+
+        private void BuildExits()
+        {
             var halfW = _arenaWidth / 2f;
             var halfD = _arenaDepth / 2f;
-            var cy = wallHeight / 2f;
-            var halfDoor = _corridorWidth / 2f;
 
-            var leftWidth = halfW - halfDoor;
-            if (leftWidth > 0.01f)
+            if (_counterflowActive)
             {
-                var leftCenter = -halfW + leftWidth / 2f;
-                CreateWall(new Vector3(leftCenter, cy, -halfD),
-                    new Vector3(leftWidth, wallHeight, wallThickness), "Wall_S_Left");
+                PositionExit(_exitPrimary, new Vector3(-halfW - 0.5f, 1f, 0), new Vector3(1f, 2f, _corridorWidth));
+                PositionExit(_exitSecondary, new Vector3(halfW + 0.5f, 1f, 0), new Vector3(1f, 2f, _corridorWidth));
+                goalPrimary.localPosition = new Vector3(-halfW - exitDepthBehind, 0, 0);
+                goalSecondary.localPosition = new Vector3(halfW + exitDepthBehind, 0, 0);
             }
-
-            var rightWidth = halfW - halfDoor;
-            if (rightWidth > 0.01f)
+            else
             {
-                var rightCenter = halfW - rightWidth / 2f;
-                CreateWall(new Vector3(rightCenter, cy, -halfD),
-                    new Vector3(rightWidth, wallHeight, wallThickness), "Wall_S_Right");
+                PositionExit(_exitPrimary, new Vector3(0, 1f, -halfD - 0.5f), new Vector3(_corridorWidth, 2f, 1f));
+                _exitSecondary.SetActive(false);
+                goalPrimary.localPosition = new Vector3(0, 0, -halfD - exitDepthBehind);
             }
+        }
 
-            if (_exitZone)
-            {
-                _exitZone.transform.localPosition = new Vector3(0, 1f, -halfD - 0.5f);
-                _exitZone.transform.localScale = new Vector3(_corridorWidth, 2f, 1f);
-            }
-
-            if (goal)
-                goal.localPosition = new Vector3(0, 0, -halfD - exitDepthBehind);
+        private void PositionExit(GameObject exitGo, Vector3 localPos, Vector3 scale)
+        {
+            exitGo.SetActive(true);
+            exitGo.transform.localPosition = localPos;
+            exitGo.transform.localScale = scale;
         }
 
         private void CreateWall(Vector3 localPos, Vector3 scale, string wallName)
@@ -245,93 +250,106 @@ namespace RL
             wall.transform.localScale = scale;
             wall.tag = "Wall";
             wall.layer = LayerMask.NameToLayer("Wall");
-
-            var renderer = wall.GetComponent<Renderer>();
-            if (renderer)
-                renderer.material.color = new Color(0.4f, 0.4f, 0.4f);
-
+            wall.GetComponent<Renderer>().material.color = new Color(0.4f, 0.4f, 0.4f);
             _walls.Add(wall);
         }
 
-        private void CreateExitZone()
+        private GameObject CreateExitZone(string exitName)
         {
-            _exitZone = new GameObject("ExitZone");
-            _exitZone.transform.SetParent(transform);
-            _exitZone.tag = "Exit";
-
-            var col = _exitZone.AddComponent<BoxCollider>();
+            var go = new GameObject(exitName);
+            go.transform.SetParent(transform);
+            go.tag = "Exit";
+            var col = go.AddComponent<BoxCollider>();
             col.isTrigger = true;
             col.size = Vector3.one;
+            return go;
         }
 
         private void ClearWalls()
         {
-            foreach (var w in _walls.Where(w => w))
-            {
+            foreach (var w in _walls.Where(w => w)) 
                 Destroy(w);
-            }
-
             _walls.Clear();
         }
 
         private void SpawnAgents()
         {
-            var halfW = _arenaWidth / 2f - 0.5f;
-            const float spawnMinZ = 0f;
-            var spawnMaxZ = _arenaDepth / 2f - 0.5f;
-
             _nextAgentId = 1;
+            var halfW = _arenaWidth / 2f - 0.5f;
+            var halfD = _arenaDepth / 2f - 0.5f;
 
             for (var i = 0; i < _numAgents; i++)
             {
-                Vector3 localPos;
-                var attempts = 0;
-                do
-                {
-                    localPos = new Vector3(
-                        Random.Range(-halfW, halfW),
-                        1f,
-                        Random.Range(spawnMinZ, spawnMaxZ)
-                    );
-                    attempts++;
-                } while (!IsSpawnClear(transform.TransformPoint(localPos), 0.5f)
-                         && attempts < 200);
+                var useSecondaryGoal = _counterflowActive && i % 2 == 1;
+                var goalTransform = useSecondaryGoal ? goalSecondary : goalPrimary;
 
-                if (attempts >= 200)
-                {
-                    Debug.LogWarning($"[Training] Could not find spawn for agent {i}");
+                var localPos = FindAgentSpawnPosition(halfW, halfD, useSecondaryGoal);
+                if (!localPos.HasValue) 
                     continue;
-                }
 
-                var worldPos = transform.TransformPoint(localPos);
-                var go = Instantiate(agentPrefab, worldPos,
-                    Quaternion.Euler(0, Random.Range(0f, 360f), 0), transform);
+                var worldPos = transform.TransformPoint(localPos.Value);
+                var go = Instantiate(
+                    agentPrefab, worldPos, Quaternion.Euler(0, Random.Range(0f, 360f), 0), transform
+                );
                 go.name = $"RL_Agent_{_nextAgentId}";
                 go.layer = LayerMask.NameToLayer("Agent");
 
                 var agent = go.GetComponent<RLAgent>();
-                if (agent)
-                {
-                    agent.goal = goal;
-                    agent.trainingManager = this;
-                    agent.Radius = AgentConfig.SampleRadius();
-                }
+                agent.goal = goalTransform;
+                agent.trainingManager = this;
+                agent.Radius = AgentConfig.SampleRadius();
+                agent.MaxAgentSpeed = AgentConfig.SampleDesiredSpeed() * AgentConfig.VelocityClamp;
 
                 var d = agent.Radius * 2f;
                 go.transform.localScale = new Vector3(d, go.transform.localScale.y, d);
                 go.GetComponent<CapsuleCollider>().isTrigger = true;
-
-                var ma = go.GetComponent<MetricsAgent>();
-                if (ma)
-                {
-                    ma.agentId = _nextAgentId;
-                    if (metricsLogger)
-                        ma.RegisterLogger(metricsLogger);
-                }
+                go.GetComponent<MetricsAgent>().agentId = _nextAgentId;
 
                 _spawnedAgents.Add(go);
                 _nextAgentId++;
             }
+        }
+
+        private Vector3? FindAgentSpawnPosition(float halfW, float halfD, bool rightSide)
+        {
+            for (var attempt = 0; attempt < 200; attempt++)
+            {
+                Vector3 localPos;
+                if (_counterflowActive)
+                {
+                    var x = rightSide
+                        ? Random.Range(-halfW, -halfW * 0.5f)
+                        : Random.Range(halfW * 0.5f, halfW);
+                    localPos = new Vector3(x, 1f, Random.Range(-halfD, halfD));
+                }
+                else
+                {
+                    localPos = new Vector3(
+                        Random.Range(-halfW, halfW), 1f,
+                        Random.Range(0f, halfD));
+                }
+
+                if (IsSpawnClear(transform.TransformPoint(localPos), 0.5f))
+                    return localPos;
+            }
+
+            return null;
+        }
+
+        private void ResetAgentPosition(GameObject agentGo)
+        {
+            var halfW = _arenaWidth / 2f - 0.5f;
+            var halfD = _arenaDepth / 2f - 0.5f;
+            var agent = agentGo.GetComponent<RLAgent>();
+            var useSecondary = _counterflowActive && agent.goal == goalSecondary;
+
+            var pos = FindAgentSpawnPosition(halfW, halfD, useSecondary);
+            if (pos.HasValue)
+                agentGo.transform.position = transform.TransformPoint(pos.Value);
+
+            agentGo.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+            agentGo.SetActive(true);
+            agentGo.GetComponent<MetricsAgent>().ResetState();
         }
 
         private bool IsSpawnClear(Vector3 worldPos, float minDist)
@@ -355,28 +373,34 @@ namespace RL
 
         private void SpawnObstacles()
         {
+            if (!obstaclePrefab || _counterflowActive)
+                return;
+
             var halfW = _arenaWidth / 2f - 1f;
             var halfD = _arenaDepth / 2f - 1f;
 
             for (var i = 0; i < _numObstacles; i++)
             {
-                Vector3 localPos;
-                var attempts = 0;
-                do
+                Vector3? pos = null;
+                for (var attempt = 0; attempt < 100; attempt++)
                 {
-                    localPos = new Vector3(
-                        Random.Range(-halfW, halfW),
-                        1f,
-                        Random.Range(-halfD + 1f, halfD)
-                    );
-                    attempts++;
-                } while (!IsObstacleClear(transform.TransformPoint(localPos), 1.5f)
-                         && attempts < 100);
+                    var candidate = new Vector3(
+                        Random.Range(-halfW, halfW), 1f,
+                        Random.Range(-halfD + 1f, halfD));
+                    var worldCandidate = transform.TransformPoint(candidate);
 
-                if (attempts >= 100) continue;
+                    if (IsObstacleClear(worldCandidate, 1.5f))
+                    {
+                        pos = candidate;
+                        break;
+                    }
+                }
 
-                var worldPos = transform.TransformPoint(localPos);
-                var obs = Instantiate(obstaclePrefab, worldPos, Quaternion.identity, transform);
+                if (!pos.HasValue) continue;
+
+                var obs = Instantiate(
+                    obstaclePrefab, transform.TransformPoint(pos.Value), Quaternion.identity, transform
+                );
                 obs.name = $"Obstacle_{i}";
                 obs.tag = "Wall";
                 obs.layer = LayerMask.NameToLayer("Wall");
@@ -388,16 +412,27 @@ namespace RL
         {
             foreach (var go in _spawnedObstacles)
             {
-                if (!go) continue;
+                if (!go) 
+                    continue;
                 if (Vector3.Distance(go.transform.position, worldPos) < minDist)
                     return false;
             }
 
             var localPos = transform.InverseTransformPoint(worldPos);
             var halfDoor = _corridorWidth / 2f;
-            var halfD = _arenaDepth / 2f;
-            if (Mathf.Abs(localPos.x) < halfDoor + 0.5f && localPos.z < -halfD + 2f)
-                return false;
+
+            if (_counterflowActive)
+            {
+                var halfW = _arenaWidth / 2f;
+                if (Mathf.Abs(localPos.z) < halfDoor + 0.5f && (localPos.x < -halfW + 2f || localPos.x > halfW - 2f))
+                    return false;
+            }
+            else
+            {
+                var halfD = _arenaDepth / 2f;
+                if (Mathf.Abs(localPos.x) < halfDoor + 0.5f && localPos.z < -halfD + 2f)
+                    return false;
+            }
 
             return true;
         }
@@ -405,116 +440,59 @@ namespace RL
         private void SpawnHazard()
         {
             if (!hazardPrefab)
+                return;
+
+            var maxSize = _counterflowActive ? _arenaDepth * 0.4f : 3f;
+            var hazardSize = Mathf.Clamp(_arenaWidth * 0.15f, 1f, maxSize);
+            var halfW = _arenaWidth / 2f - hazardSize;
+            var halfD = _arenaDepth / 2f - hazardSize;
+
+            for (var attempt = 0; attempt < 50; attempt++)
             {
+                Vector3 localPos;
+                if (_counterflowActive)
+                {
+                    localPos = new Vector3(
+                        Random.Range(-halfW * 0.4f, halfW * 0.4f),
+                        1f,
+                        Random.Range(-halfD, halfD));
+                }
+                else
+                {
+                    localPos = new Vector3(
+                        Random.Range(-halfW, halfW),
+                        1f,
+                        Random.Range(-halfD, 0f));
+                }
+
+                if (!IsSpawnClear(transform.TransformPoint(localPos), hazardSize)) continue;
+
+                _spawnedHazard = Instantiate(
+                    hazardPrefab, transform.TransformPoint(localPos), Quaternion.identity, transform
+                );
+                _spawnedHazard.name = "Hazard";
+                _spawnedHazard.tag = "Hazard";
+                _spawnedHazard.layer = LayerMask.NameToLayer("Hazard");
+                _spawnedHazard.transform.localScale = new Vector3(hazardSize, 2f, hazardSize);
+                _hazardDespawnTime = Time.time + Random.Range(5f, 15f);
                 return;
             }
-
-            var halfW = _arenaWidth / 2f - 2f;
-            var halfD = _arenaDepth / 2f - 2f;
-            var hazardSize = _arenaWidth * 0.2f;
-
-            Vector3 localPos;
-            var attempts = 0;
-            do
-            {
-                localPos = new Vector3(
-                    Random.Range(-halfW, halfW),
-                    1f,
-                    Random.Range(-halfD + 2f, 0f));
-                attempts++;
-            } while (!IsHazardClear(transform.TransformPoint(localPos), hazardSize)
-                     && attempts < 50);
-
-            if (attempts >= 50)
-            {
-                return;
-            }
-
-            _spawnedHazard = Instantiate(
-                hazardPrefab, transform.TransformPoint(localPos), Quaternion.identity, transform
-            );
-            _spawnedHazard.name = "Hazard";
-            _spawnedHazard.tag = "Hazard";
-            _spawnedHazard.transform.localScale = new Vector3(hazardSize, 2f, hazardSize);
-            _hazardSpawned = true;
-            _hazardDespawnTime = Time.time + Random.Range(15f, 30f);
-        }
-
-        private bool IsHazardClear(Vector3 worldPos, float minDist)
-        {
-            foreach (var go in _spawnedAgents)
-            {
-                if (!go || !go.activeSelf) continue;
-                if (Vector3.Distance(go.transform.position, worldPos) < minDist)
-                    return false;
-            }
-
-            var localPos = transform.InverseTransformPoint(worldPos);
-            var halfDoor = _corridorWidth / 2f;
-            var halfD = _arenaDepth / 2f;
-            if (Mathf.Abs(localPos.x) < halfDoor + 1f && localPos.z < -halfD + 3f)
-                return false;
-
-            return true;
-        }
-
-        private void SetupMetrics()
-        {
-            if (!metricsLogger)
-            {
-                return;
-            }
-            metricsLogger.totalAgents = _numAgents;
-            metricsLogger.RegisterAgents();
         }
 
         private void ClearSpawned()
         {
-            foreach (var go in _spawnedAgents.Where(go => go))
-            {
+            foreach (var go in _spawnedAgents.Where(go => go)) 
                 Destroy(go);
-            }
             _spawnedAgents.Clear();
 
             foreach (var go in _spawnedObstacles.Where(go => go))
-            {
                 Destroy(go);
-            }
             _spawnedObstacles.Clear();
 
             if (_spawnedHazard)
             {
                 Destroy(_spawnedHazard);
                 _spawnedHazard = null;
-            }
-        }
-
-        private void ResetAgentPosition(GameObject agentGo)
-        {
-            var halfW = _arenaWidth / 2f - 0.5f;
-            var spawnMaxZ = _arenaDepth / 2f - 0.5f;
-
-            Vector3 localPos;
-            var attempts = 0;
-            do
-            {
-                localPos = new Vector3(
-                    Random.Range(-halfW, halfW),
-                    1f,
-                    Random.Range(0f, spawnMaxZ));
-                attempts++;
-            } while (!IsSpawnClear(transform.TransformPoint(localPos), 0.5f) && attempts < 200);
-
-            agentGo.transform.position = transform.TransformPoint(localPos);
-            agentGo.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
-            agentGo.SetActive(true);
-
-            var ma = agentGo.GetComponent<MetricsAgent>();
-            if (ma)
-            {
-                ma.ResetState();
-                if (metricsLogger)
-                    ma.RegisterLogger(metricsLogger);
             }
         }
     }

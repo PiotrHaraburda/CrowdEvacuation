@@ -250,7 +250,7 @@ GameObject:
   m_Component:
   - component: {fileID: 216961355}
   m_Layer: 0
-  m_Name: SFM_Goal_South
+  m_Name: Agent_Goal_South
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -635,7 +635,7 @@ GameObject:
   m_Component:
   - component: {fileID: 595133192}
   m_Layer: 0
-  m_Name: SFM_Goal_West
+  m_Name: Agent_Goal_West
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -668,7 +668,7 @@ GameObject:
   - component: {fileID: 744801136}
   - component: {fileID: 744801135}
   - component: {fileID: 744801134}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Block_NW
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -829,7 +829,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1091167413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1137,7 +1137,7 @@ GameObject:
   - component: {fileID: 1314400458}
   - component: {fileID: 1314400457}
   - component: {fileID: 1314400456}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Block_SE
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1276,7 +1276,7 @@ GameObject:
   - component: {fileID: 1448157668}
   - component: {fileID: 1448157667}
   - component: {fileID: 1448157666}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Block_NE
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1372,6 +1372,71 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1448157664}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1495195670
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1495195671}
+  - component: {fileID: 1495195672}
+  m_Layer: 0
+  m_Name: RLManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1495195671
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1495195670}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.38433, y: 1, z: -4.49217}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1495195672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1495195670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c1ce880db80a0843b79eabb90a72f27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentPrefab: {fileID: 793577169775243660, guid: 110453db64a580f45accc4de399cfe08, type: 3}
+  metricsLogger: {fileID: 1607329508}
+  streams:
+  - name: N - S
+    goal: {fileID: 216961355}
+    agentCount: 328
+    spawnRate: 2.4
+    minX: -1.6
+    maxX: 2.1
+    minZ: 6
+    maxZ: 8
+    minSpawnDist: 0.38
+  - name: E - W
+    goal: {fileID: 595133192}
+    agentCount: 278
+    spawnRate: 3.42
+    minX: 5.5
+    maxX: 7
+    minZ: -0.5
+    maxZ: 2.4
+    minSpawnDist: 0.38
 --- !u!1 &1607329507
 GameObject:
   m_ObjectHideFlags: 0
@@ -1401,9 +1466,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6341b28d9c34a958cd95eb910b24909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: SFM
+  modelType: RL
   scenarioId: Crossing90
-  runId: D_007_SFM_cal_26
+  runId: D_007_RL
   outputDirectory: Metrics
   densityMeasurementRadius: 2
   exitMeasurementPoint: {fileID: 1406471064}
@@ -1597,7 +1662,7 @@ GameObject:
   - component: {fileID: 2030714335}
   - component: {fileID: 2030714334}
   - component: {fileID: 2030714333}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Block_SW
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1705,3 +1770,4 @@ SceneRoots:
   - {fileID: 1091167414}
   - {fileID: 216961355}
   - {fileID: 595133192}
+  - {fileID: 1495195671}

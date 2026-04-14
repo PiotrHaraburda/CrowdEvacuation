@@ -58,10 +58,8 @@ namespace Metrics
 
         public void ReportCollision(string type, int otherId = -1)
         {
-            if (IsEvacuated)
-            {
+            if (IsEvacuated || !_logger) 
                 return;
-            }
             _logger.OnAgentCollision(agentId, type, otherId);
         }
 
@@ -69,7 +67,7 @@ namespace Metrics
         {
             if (IsEvacuated) return false;
 
-            if (_logger.CheckExitCrossing(this, pos))
+            if (_logger && _logger.CheckExitCrossing(this, pos))
             {
                 if (deactivate) 
                     gameObject.SetActive(false);
@@ -81,7 +79,8 @@ namespace Metrics
                 return false;
 
             MarkEvacuated();
-            _logger.OnAgentEvacuated(agentId, exitCol.gameObject.name);
+            if (_logger) 
+                _logger.OnAgentEvacuated(agentId, exitCol.gameObject.name);
             if (deactivate) 
                 gameObject.SetActive(false);
             return true;

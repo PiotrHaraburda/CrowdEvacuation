@@ -5,40 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84eea257-372f-4676-b074-99441a65da73" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Models/SFM_Agent.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Models/SFM_Agent.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assembly-CSharp.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Assembly-CSharp.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Config/Evacuation.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Config/Evacuation.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Training_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Training_timers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Models/RL_Agent.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Models/RL_Agent.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SFM/SocialForceAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/SFM/SocialForceAgent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Charts/crossing90_d007_calibrated.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/agents_frame.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/collisions.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/density_heatmap.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/evacuation_curve.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/fundamental_diagram.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/headway.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/specific_flow_series.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/summary.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_003_SFM/throughput.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007/summary.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/agents_frame.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/agents_frame.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/collisions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/collisions.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/density_heatmap.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/density_heatmap.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/evacuation_curve.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/evacuation_curve.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/fundamental_diagram.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/fundamental_diagram.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/headway.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/headway.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/specific_flow_series.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/specific_flow_series.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/summary.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/throughput.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM/throughput.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/agents_frame.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/collisions.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/density_heatmap.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/evacuation_curve.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/fundamental_diagram.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/headway.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/specific_flow_series.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/summary.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_calibrated/throughput.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/SFM_Calibration.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Training.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Training.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Metrics/MetricsAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Metrics/MetricsAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/RL/RLAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/RL/RLAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/RL/TrainingEnvironmentManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/RL/TrainingEnvironmentManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Utility/AgentConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Utility/AgentConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CrowdEvacuation.sln" beforeDir="false" afterPath="$PROJECT_DIR$/CrowdEvacuation.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/crossing_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/crossing_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/narrow_door_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/narrow_door_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TimeManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TimeManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,5 +78,16 @@
       <updated>1773698478646</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Metrics/narrow_door_analyzer.py</url>
+          <line>311</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -48,6 +48,7 @@
     <Analyzer Include="C:\Users\Piotr\CrowdEvacuation\Library\PackageCache\com.unity.ai.inference@e760aa121ec7\Runtime\Core\SourceGenerator\SourceGenerators.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\RL\RLManager.cs" />
     <Compile Include="Assets\Scripts\Ghost\GhostAgent.cs" />
     <Compile Include="Assets\Scripts\RL\TrainingEnvironmentManager.cs" />
     <Compile Include="Assets\Scripts\Utility\FreeLookCamera.cs" />
@@ -93,6 +94,7 @@
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Row.uss" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ColorSwatch.uss" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Themes\App UI - Palette.uss" />
+    <None Include="Assets\ML-Agents\Timers\Scene_Eval_NarrowDoor_timers.json" />
     <None Include="Library\PackageCache\com.unity.test-framework.performance@92d1d09a72ed\ValidationExceptions.json" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\StackView.uss" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Spacer.uss" />
@@ -219,6 +221,7 @@
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Button.uss" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Link.uss" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\ColorWheel.uss" />
+    <None Include="Assets\ML-Agents\Timers\Scene_Eval_Crossing_timers.json" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\App UI.uss" />
     <None Include="Library\PackageCache\com.unity.nuget.newtonsoft-json@74deb55db2a0\Runtime\Newtonsoft.Json.xml" />
     <None Include="Library\PackageCache\com.unity.collections@56bff8827a7e\ValidationExceptions.json" />

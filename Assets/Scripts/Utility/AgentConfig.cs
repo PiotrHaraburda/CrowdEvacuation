@@ -8,7 +8,7 @@ namespace Utility
         public const float MeanRadius = 0.185f;
         private const float StdRadius = 0.015f;
         private const float MinRadius = 0.15f;
-        private const float MaxRadius = 0.22f;
+        public const float MaxRadius = 0.22f;
 
         // Weidmann 1993: desired walking speed 1.34 m/s +- 0.26 m/s
         private const float MeanDesiredSpeed = 1.34f;

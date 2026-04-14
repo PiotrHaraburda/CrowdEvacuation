@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 51334975}
   - component: {fileID: 51334974}
   - component: {fileID: 51334973}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall_Door_Right
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 163486504}
   - component: {fileID: 163486503}
   - component: {fileID: 163486502}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall_Door_Left
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -459,7 +459,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &262200796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,6 +499,61 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &493967229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 493967231}
+  - component: {fileID: 493967230}
+  m_Layer: 0
+  m_Name: RLManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &493967230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493967229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c1ce880db80a0843b79eabb90a72f27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentPrefab: {fileID: 793577169775243660, guid: 110453db64a580f45accc4de399cfe08, type: 3}
+  metricsLogger: {fileID: 1788929301}
+  streams:
+  - name: Room
+    goal: {fileID: 641944381}
+    agentCount: 93
+    spawnRate: 0
+    minX: -4
+    maxX: 3.5
+    minZ: -0.5
+    maxZ: 4
+--- !u!4 &493967231
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493967229}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 30, y: 0, z: 30}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &542005133
 GameObject:
   m_ObjectHideFlags: 0
@@ -511,7 +566,7 @@ GameObject:
   - component: {fileID: 542005137}
   - component: {fileID: 542005136}
   - component: {fileID: 542005135}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall_Left
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -617,7 +672,7 @@ GameObject:
   m_Component:
   - component: {fileID: 641944381}
   m_Layer: 0
-  m_Name: SFM_Goal
+  m_Name: Agent_Goal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1073,9 +1128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6341b28d9c34a958cd95eb910b24909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: SFM
+  modelType: RL
   scenarioId: NarrowDoor
-  runId: LC_001_SFM_cal_28
+  runId: LC_001_RL
   outputDirectory: Metrics
   densityMeasurementRadius: 0.5
   exitMeasurementPoint: {fileID: 1995288927}
@@ -1119,7 +1174,7 @@ GameObject:
   - component: {fileID: 1798131306}
   - component: {fileID: 1798131305}
   - component: {fileID: 1798131304}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall_Back
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1227,7 +1282,7 @@ GameObject:
   - component: {fileID: 1811581851}
   - component: {fileID: 1811581850}
   - component: {fileID: 1811581849}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall_Right
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1414,3 +1469,4 @@ SceneRoots:
   - {fileID: 641944381}
   - {fileID: 262200797}
   - {fileID: 1933964279}
+  - {fileID: 493967231}

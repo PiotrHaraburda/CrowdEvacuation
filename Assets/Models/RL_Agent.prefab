@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 6
+    VectorObservationSize: 7
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -181,9 +181,9 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: cad8a0ff53f9755469c5d395310aa48b, type: 3}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 2
   m_BehaviorName: Evacuation
   TeamId: 0
   m_UseChildSensors: 1
@@ -209,14 +209,15 @@ MonoBehaviour:
   maxRotation: 180
   goal: {fileID: 0}
   goalReward: 1
-  wallCollisionPenalty: -0.005
-  agentCollisionPenalty: -0.1
+  timeoutPenalty: -1
   timePenalty: -0.001
-  stagnationPenalty: -0.01
+  wallCollisionPenalty: -0.01
+  agentCollisionPenalty: -0.01
+  stagnationPenalty: -0.05
   distanceRewardScale: 0.5
-  hazardPenalty: -0.05
+  hazardProximityPenalty: -0.05
+  hazardContactPenalty: -0.5
   hazardDetectionRadius: 3
-  hazardDirectPenalty: -0.5
   stagnationCheckSteps: 50
   stagnationThreshold: 0.1
   trainingManager: {fileID: 0}
