@@ -1,11 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using Ghost;
 using Metrics;
 using UnityEngine;
 using Utility;
-using Random = UnityEngine.Random;
 
 namespace SFM
 {
@@ -17,118 +16,140 @@ namespace SFM
         [Header("References")]
         public EvacuationMetricsLogger metricsLogger;
 
+        [Header("Empirical data")]
+        public string dataFolderPath = "";
+        public string fileName = "";
+        public Vector2 dataOffset = Vector2.zero;
+
         [Header("Spawn streams")]
         public SpawnStream[] streams;
-
-        private readonly List<SocialForceAgent> _agents = new();
-        private int _nextId = 1;
 
         [Serializable]
         public class SpawnStream
         {
             public string name;
             public Transform goal;
-            public int agentCount;
-            public float spawnRate;
-            public float minX, maxX;
-            public float minZ, maxZ;
-            public float minSpawnDist = 0.38f;
+            public float filterMinX, filterMaxX;
+            public float filterMinZ, filterMaxZ;
         }
+
+        private struct PendingSpawn
+        {
+            public int AgentId;
+            public float Time;
+            public Vector3 Position;
+            public Vector3 InitialVelocity;
+            public Transform Goal;
+        }
+
+        private readonly List<SocialForceAgent> _agents = new();
+        private readonly List<PendingSpawn> _pending = new();
+        private float _simStart;
 
         private void Start()
         {
-            metricsLogger.totalAgents = streams.Sum(s => s.agentCount);
+            _simStart = Time.time;
+            LoadEmpiricalSpawns();
+        }
 
-            foreach (var stream in streams)
+        private void LoadEmpiricalSpawns()
+        {
+            var filePath = Path.Combine(dataFolderPath, fileName);
+            if (!File.Exists(filePath))
             {
-                if (stream.spawnRate <= 0f)
-                    SpawnAllInStream(stream);
-                else
-                    StartCoroutine(SpawnGradually(stream));
+                return;
+            }
+
+            var json = File.ReadAllText(filePath);
+            var wrapped = "{\"agents\":" + json + "}";
+            var episode = JsonUtility.FromJson<EpisodeData>(wrapped);
+
+            if (episode?.agents == null)
+            {
+                return;
+            }
+
+            var unassigned = 0;
+            foreach (var agent in episode.agents)
+            {
+                if (agent.x == null || agent.x.Length == 0 || agent.t == null || agent.t.Length == 0)
+                    continue;
+
+                var x0 = agent.x[0] - dataOffset.x;
+                var z0 = agent.y[0] - dataOffset.y;
+
+                var initialVelocity = Vector3.zero;
+                if (agent.x.Length > 1 && agent.t.Length > 1)
+                {
+                    var dt = agent.t[1] - agent.t[0];
+                    if (dt > 0.0001f)
+                    {
+                        var vx = ((agent.x[1] - dataOffset.x) - x0) / dt;
+                        var vz = ((agent.y[1] - dataOffset.y) - z0) / dt;
+                        initialVelocity = new Vector3(vx, 0f, vz);
+                    }
+                }
+
+                var matched = false;
+                foreach (var stream in streams)
+                {
+                    if (x0 < stream.filterMinX || x0 > stream.filterMaxX) continue;
+                    if (z0 < stream.filterMinZ || z0 > stream.filterMaxZ) continue;
+
+                    _pending.Add(new PendingSpawn
+                    {
+                        AgentId = agent.id,
+                        Time = agent.t[0],
+                        Position = new Vector3(x0, 1f, z0),
+                        InitialVelocity = initialVelocity,
+                        Goal = stream.goal
+                    });
+                    matched = true;
+                    break;
+                }
+
+                if (!matched) unassigned++;
+            }
+
+            _pending.Sort((a, b) => a.Time.CompareTo(b.Time));
+
+            metricsLogger.totalAgents = _pending.Count;
+
+            if (unassigned > 0)
+                Debug.LogWarning($"[SFM] {unassigned} empirical agents unmatched to any spawn stream");
+        }
+
+        private void FixedUpdate()
+        {
+            var elapsed = Time.time - _simStart;
+            while (_pending.Count > 0 && _pending[0].Time <= elapsed)
+            {
+                SpawnAgent(_pending[0]);
+                _pending.RemoveAt(0);
             }
         }
 
-        private void SpawnAllInStream(SpawnStream stream)
+        private void SpawnAgent(PendingSpawn spawn)
         {
-            for (var i = 0; i < stream.agentCount; i++)
-            {
-                var pos = FindSpawnPosition(stream);
-                if (pos.HasValue)
-                    SpawnAgent(pos.Value, stream.goal);
-            }
-
-            metricsLogger.RegisterAgents();
-        }
-
-        private IEnumerator SpawnGradually(SpawnStream stream)
-        {
-            var delay = 1f / stream.spawnRate;
-            for (var i = 0; i < stream.agentCount; i++)
-            {
-                var pos = FindSpawnPosition(stream);
-                if (pos.HasValue)
-                    SpawnAgent(pos.Value, stream.goal);
-
-                yield return new WaitForSeconds(delay);
-            }
-        }
-        
-        private Vector3? FindSpawnPosition(SpawnStream stream)
-        {
-            var attempts = 0;
-            Vector3 pos;
-            do
-            {
-                pos = new Vector3(
-                    Random.Range(stream.minX, stream.maxX),
-                    1f,
-                    Random.Range(stream.minZ, stream.maxZ)
-                );
-                attempts++;
-            } while (!IsSpawnClear(pos, stream.minSpawnDist) && attempts < 200);
-
-            if (attempts >= 200)
-            {
-                Debug.LogWarning($"[SFM] Could not find clear spawn in stream '{stream.name}'");
-                return null;
-            }
-
-            return pos;
-        }
-        
-        private bool IsSpawnClear(Vector3 pos, float minDist)
-        {
-            foreach (var agent in _agents)
-            {
-                if (!agent) continue;
-                if (Vector3.Distance(agent.transform.position, pos) < minDist)
-                    return false;
-            }
-            return true;
-        }
-
-        private void SpawnAgent(Vector3 pos, Transform agentGoal)
-        {
-            var go = Instantiate(sfmAgentPrefab, pos, Quaternion.identity, transform);
-            go.name = $"SFM_Agent_{_nextId}";
+            var go = Instantiate(sfmAgentPrefab, spawn.Position, Quaternion.identity, transform);
+            go.name = $"SFM_Agent_{spawn.AgentId}";
 
             var agent = go.GetComponent<SocialForceAgent>();
-            agent.goal = agentGoal;
+            agent.goal = spawn.Goal;
             agent.DesiredSpeed = AgentConfig.SampleDesiredSpeed();
             agent.Radius = AgentConfig.SampleRadius();
+            agent.SetInitialVelocity(spawn.InitialVelocity);
 
             var d = agent.Radius * 2f;
             go.transform.localScale = new Vector3(d, go.transform.localScale.y, d);
-            var capsule = go.GetComponent<CapsuleCollider>();
-            capsule.isTrigger = true;
+            go.GetComponent<CapsuleCollider>().isTrigger = true;
 
             var ma = go.GetComponent<MetricsAgent>();
-            ma.agentId = _nextId;
+            ma.agentId = spawn.AgentId;
             ma.RegisterLogger(metricsLogger);
             metricsLogger.RegisterAgent(ma);
 
             _agents.Add(agent);
-            _nextId++;
         }
     }
 }

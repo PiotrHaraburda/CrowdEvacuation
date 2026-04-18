@@ -7,6 +7,8 @@ using Utility;
 
 namespace RL
 {
+    public enum ArenaMode { Normal, Counterflow, Crossing }
+
     public class TrainingEnvironmentManager : MonoBehaviour
     {
         [Header("Prefabs")]
@@ -20,6 +22,7 @@ namespace RL
         public float wallHeight = 2f;
         public float wallThickness = 0.2f;
         public float exitDepthBehind = 3f;
+        public float corridorDepth = 4f;
 
         [Header("Goals")]
         public Transform goalPrimary;
@@ -43,14 +46,13 @@ namespace RL
         private int _numObstacles;
         private float _corridorWidth;
         private bool _threatActive;
-        private bool _counterflowActive;
+        private ArenaMode _mode;
 
         private int _nextAgentId = 1;
         private int _agentsDone;
         private bool _pendingFullReset;
         private float _nextCurriculumCheck;
         private float _hazardDespawnTime;
-        private float _hazardSpawnTime;
 
         private void Start()
         {
@@ -122,15 +124,16 @@ namespace RL
         private void ResetEnvironment()
         {
             ReadCurriculumParameters();
-            _counterflowActive = _numAgents >= 10 && Random.value > 0.5f;
+            PickArenaMode();
             ComputeArenaSize();
-            _numObstacles = _numAgents <= 1 ? 0 : Mathf.RoundToInt(_arenaWidth * _arenaDepth / 20f);
+            _numObstacles = _numAgents <= 1 || _mode != ArenaMode.Normal
+                ? 0
+                : Mathf.RoundToInt(_arenaWidth * _arenaDepth / 20f);
 
             ClearSpawned();
             ClearWalls();
             BuildWalls();
             BuildExits();
-            MetricsAgent.ResetExitCache();
             SpawnObstacles();
             if (_threatActive) 
                 SpawnHazard();
@@ -148,19 +151,41 @@ namespace RL
             _threatActive = envParams.GetWithDefault("threat_active", defaultThreatActive ? 1f : 0f) > 0.5f;
         }
 
+        private void PickArenaMode()
+        {
+            if (_numAgents < 10)
+            {
+                _mode = ArenaMode.Normal;
+                return;
+            }
+
+            var roll = Random.value;
+            if (roll < 0.2f)
+                _mode = ArenaMode.Normal;
+            else if (roll < 0.4f)
+                _mode = ArenaMode.Counterflow;
+            else
+                _mode = ArenaMode.Crossing;
+        }
+
         private void ComputeArenaSize()
         {
             var baseSize = Mathf.Max(minArenaSize, Mathf.Sqrt(_numAgents) * arenaScalePerAgent);
 
-            if (_counterflowActive)
+            switch (_mode)
             {
-                _arenaWidth = baseSize;
-                _arenaDepth = 4f;
-            }
-            else
-            {
-                _arenaWidth = baseSize;
-                _arenaDepth = baseSize;
+                case ArenaMode.Counterflow:
+                    _arenaWidth = baseSize;
+                    _arenaDepth = corridorDepth;
+                    break;
+                case ArenaMode.Crossing:
+                    _arenaWidth = baseSize;
+                    _arenaDepth = baseSize;
+                    break;
+                default:
+                    _arenaWidth = baseSize;
+                    _arenaDepth = baseSize;
+                    break;
             }
         }
 
@@ -169,21 +194,53 @@ namespace RL
             var halfW = _arenaWidth / 2f;
             var halfD = _arenaDepth / 2f;
             var cy = wallHeight / 2f;
+            var halfCor = corridorDepth / 2f;
+
+            switch (_mode)
+            {
+                case ArenaMode.Normal:
+                    CreateWall(new Vector3(0, cy, halfD), new Vector3(_arenaWidth, wallHeight, wallThickness), "Wall_N");
+                    CreateWall(new Vector3(halfW, cy, 0), new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_E");
+                    CreateWall(new Vector3(-halfW, cy, 0), new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_W");
+                    BuildExitWall(new Vector3(0, cy, -halfD), _arenaWidth, wallThickness, _corridorWidth, "Wall_S");
+                    break;
+
+                case ArenaMode.Counterflow:
+                    CreateWall(new Vector3(0, cy, halfCor), new Vector3(_arenaWidth, wallHeight, wallThickness), "Wall_N");
+                    CreateWall(new Vector3(0, cy, -halfCor), new Vector3(_arenaWidth, wallHeight, wallThickness), "Wall_S");
+                    BuildExitWall(new Vector3(-halfW, cy, 0), wallThickness, corridorDepth, _corridorWidth, "Wall_W");
+                    BuildExitWall(new Vector3(halfW, cy, 0), wallThickness, corridorDepth, _corridorWidth, "Wall_E");
+                    break;
+
+                case ArenaMode.Crossing:
+                    BuildCrossingWalls(halfW, halfD, halfCor, cy);
+                    break;
+            }
+        }
+
+        private void BuildCrossingWalls(float halfW, float halfD, float halfCor, float cy)
+        {
+            var blockW = halfW - halfCor;
+            var blockD = halfD - halfCor;
+
+            if (blockW > 0.1f && blockD > 0.1f)
+            {
+                CreateWall(new Vector3(-halfCor - blockW / 2f, cy, halfCor + blockD / 2f),
+                    new Vector3(blockW, wallHeight, blockD), "Block_NW");
+                CreateWall(new Vector3(halfCor + blockW / 2f, cy, halfCor + blockD / 2f),
+                    new Vector3(blockW, wallHeight, blockD), "Block_NE");
+                CreateWall(new Vector3(-halfCor - blockW / 2f, cy, -halfCor - blockD / 2f),
+                    new Vector3(blockW, wallHeight, blockD), "Block_SW");
+                CreateWall(new Vector3(halfCor + blockW / 2f, cy, -halfCor - blockD / 2f),
+                    new Vector3(blockW, wallHeight, blockD), "Block_SE");
+            }
 
             CreateWall(new Vector3(0, cy, halfD), new Vector3(_arenaWidth, wallHeight, wallThickness), "Wall_N");
+            CreateWall(new Vector3(halfW, cy, 0), new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_E");
 
-            if (_counterflowActive)
-            {
-                CreateWall(new Vector3(0, cy, -halfD), new Vector3(_arenaWidth, wallHeight, wallThickness), "Wall_S");
-                BuildExitWall(new Vector3(-halfW, cy, 0), wallThickness, _arenaDepth, _corridorWidth, "Wall_W");
-                BuildExitWall(new Vector3(halfW, cy, 0), wallThickness, _arenaDepth, _corridorWidth, "Wall_E");
-            }
-            else
-            {
-                CreateWall(new Vector3(halfW, cy, 0), new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_E");
-                CreateWall(new Vector3(-halfW, cy, 0), new Vector3(wallThickness, wallHeight, _arenaDepth), "Wall_W");
-                BuildExitWall(new Vector3(0, cy, -halfD), _arenaWidth, wallThickness, _corridorWidth, "Wall_S");
-            }
+            BuildExitWall(new Vector3(0, cy, -halfD), corridorDepth, wallThickness, _corridorWidth, "Wall_S");
+
+            BuildExitWall(new Vector3(-halfW, cy, 0), wallThickness, corridorDepth, _corridorWidth, "Wall_W");
         }
 
         private void BuildExitWall(Vector3 center, float totalWidth, float totalDepth, float doorWidth, string namePrefix)
@@ -219,18 +276,27 @@ namespace RL
             var halfW = _arenaWidth / 2f;
             var halfD = _arenaDepth / 2f;
 
-            if (_counterflowActive)
+            switch (_mode)
             {
-                PositionExit(_exitPrimary, new Vector3(-halfW - 0.5f, 1f, 0), new Vector3(1f, 2f, _corridorWidth));
-                PositionExit(_exitSecondary, new Vector3(halfW + 0.5f, 1f, 0), new Vector3(1f, 2f, _corridorWidth));
-                goalPrimary.localPosition = new Vector3(-halfW - exitDepthBehind, 0, 0);
-                goalSecondary.localPosition = new Vector3(halfW + exitDepthBehind, 0, 0);
-            }
-            else
-            {
-                PositionExit(_exitPrimary, new Vector3(0, 1f, -halfD - 0.5f), new Vector3(_corridorWidth, 2f, 1f));
-                _exitSecondary.SetActive(false);
-                goalPrimary.localPosition = new Vector3(0, 0, -halfD - exitDepthBehind);
+                case ArenaMode.Normal:
+                    PositionExit(_exitPrimary, new Vector3(0, 1f, -halfD - 0.5f), new Vector3(_corridorWidth, 2f, 1f));
+                    _exitSecondary.SetActive(false);
+                    goalPrimary.localPosition = new Vector3(0, 0, -halfD - exitDepthBehind);
+                    break;
+
+                case ArenaMode.Counterflow:
+                    PositionExit(_exitPrimary, new Vector3(-halfW - 0.5f, 1f, 0), new Vector3(1f, 2f, _corridorWidth));
+                    PositionExit(_exitSecondary, new Vector3(halfW + 0.5f, 1f, 0), new Vector3(1f, 2f, _corridorWidth));
+                    goalPrimary.localPosition = new Vector3(-halfW - exitDepthBehind, 0, 0);
+                    goalSecondary.localPosition = new Vector3(halfW + exitDepthBehind, 0, 0);
+                    break;
+
+                case ArenaMode.Crossing:
+                    PositionExit(_exitPrimary, new Vector3(0, 1f, -halfD - 0.5f), new Vector3(_corridorWidth, 2f, 1f));
+                    PositionExit(_exitSecondary, new Vector3(-halfW - 0.5f, 1f, 0), new Vector3(1f, 2f, _corridorWidth));
+                    goalPrimary.localPosition = new Vector3(0, 0, -halfD - exitDepthBehind);
+                    goalSecondary.localPosition = new Vector3(-halfW - exitDepthBehind, 0, 0);
+                    break;
             }
         }
 
@@ -277,20 +343,25 @@ namespace RL
             _nextAgentId = 1;
             var halfW = _arenaWidth / 2f - 0.5f;
             var halfD = _arenaDepth / 2f - 0.5f;
+            var halfCor = corridorDepth / 2f - 0.5f;
 
             for (var i = 0; i < _numAgents; i++)
             {
-                var useSecondaryGoal = _counterflowActive && i % 2 == 1;
-                var goalTransform = useSecondaryGoal ? goalSecondary : goalPrimary;
+                var useSecondary = _mode != ArenaMode.Normal && i % 2 == 1;
+                var goalTransform = useSecondary ? goalSecondary : goalPrimary;
 
-                var localPos = FindAgentSpawnPosition(halfW, halfD, useSecondaryGoal);
+                var localPos = FindAgentSpawnPosition(halfW, halfD, halfCor, useSecondary);
                 if (!localPos.HasValue) 
                     continue;
 
                 var worldPos = transform.TransformPoint(localPos.Value);
-                var go = Instantiate(
-                    agentPrefab, worldPos, Quaternion.Euler(0, Random.Range(0f, 360f), 0), transform
-                );
+                var dirToGoal = (goalTransform.position - worldPos).normalized;
+                dirToGoal.y = 0;
+                var rotation = dirToGoal.sqrMagnitude > 0.001f
+                    ? Quaternion.LookRotation(dirToGoal)
+                    : Quaternion.identity;
+
+                var go = Instantiate(agentPrefab, worldPos, rotation, transform);
                 go.name = $"RL_Agent_{_nextAgentId}";
                 go.layer = LayerMask.NameToLayer("Agent");
 
@@ -310,23 +381,36 @@ namespace RL
             }
         }
 
-        private Vector3? FindAgentSpawnPosition(float halfW, float halfD, bool rightSide)
+        private Vector3? FindAgentSpawnPosition(float halfW, float halfD, float halfCor, bool useSecondary)
         {
             for (var attempt = 0; attempt < 200; attempt++)
             {
                 Vector3 localPos;
-                if (_counterflowActive)
+                switch (_mode)
                 {
-                    var x = rightSide
-                        ? Random.Range(-halfW, -halfW * 0.5f)
-                        : Random.Range(halfW * 0.5f, halfW);
-                    localPos = new Vector3(x, 1f, Random.Range(-halfD, halfD));
-                }
-                else
-                {
-                    localPos = new Vector3(
-                        Random.Range(-halfW, halfW), 1f,
-                        Random.Range(0f, halfD));
+                    case ArenaMode.Counterflow:
+                        var cx = useSecondary
+                            ? Random.Range(-halfW, -halfW * 0.5f)
+                            : Random.Range(halfW * 0.5f, halfW);
+                        localPos = new Vector3(cx, 1f, Random.Range(-halfCor, halfCor));
+                        break;
+
+                    case ArenaMode.Crossing:
+                        if (useSecondary)
+                            localPos = new Vector3(
+                                Random.Range(halfW * 0.5f, halfW), 1f,
+                                Random.Range(-halfCor, halfCor));
+                        else
+                            localPos = new Vector3(
+                                Random.Range(-halfCor, halfCor), 1f,
+                                Random.Range(halfD * 0.5f, halfD));
+                        break;
+
+                    default:
+                        localPos = new Vector3(
+                            Random.Range(-halfW, halfW), 1f,
+                            Random.Range(0f, halfD));
+                        break;
                 }
 
                 if (IsSpawnClear(transform.TransformPoint(localPos), 0.5f))
@@ -340,10 +424,11 @@ namespace RL
         {
             var halfW = _arenaWidth / 2f - 0.5f;
             var halfD = _arenaDepth / 2f - 0.5f;
+            var halfCor = corridorDepth / 2f - 0.5f;
             var agent = agentGo.GetComponent<RLAgent>();
-            var useSecondary = _counterflowActive && agent.goal == goalSecondary;
+            var useSecondary = _mode != ArenaMode.Normal && agent.goal == goalSecondary;
 
-            var pos = FindAgentSpawnPosition(halfW, halfD, useSecondary);
+            var pos = FindAgentSpawnPosition(halfW, halfD, halfCor, useSecondary);
             if (pos.HasValue)
                 agentGo.transform.position = transform.TransformPoint(pos.Value);
 
@@ -373,7 +458,7 @@ namespace RL
 
         private void SpawnObstacles()
         {
-            if (!obstaclePrefab || _counterflowActive)
+            if (!obstaclePrefab || _numObstacles == 0) 
                 return;
 
             var halfW = _arenaWidth / 2f - 1f;
@@ -420,19 +505,9 @@ namespace RL
 
             var localPos = transform.InverseTransformPoint(worldPos);
             var halfDoor = _corridorWidth / 2f;
-
-            if (_counterflowActive)
-            {
-                var halfW = _arenaWidth / 2f;
-                if (Mathf.Abs(localPos.z) < halfDoor + 0.5f && (localPos.x < -halfW + 2f || localPos.x > halfW - 2f))
-                    return false;
-            }
-            else
-            {
-                var halfD = _arenaDepth / 2f;
-                if (Mathf.Abs(localPos.x) < halfDoor + 0.5f && localPos.z < -halfD + 2f)
-                    return false;
-            }
+            var halfD = _arenaDepth / 2f;
+            if (Mathf.Abs(localPos.x) < halfDoor + 0.5f && localPos.z < -halfD + 2f)
+                return false;
 
             return true;
         }
@@ -442,7 +517,8 @@ namespace RL
             if (!hazardPrefab)
                 return;
 
-            var maxSize = _counterflowActive ? _arenaDepth * 0.4f : 3f;
+            var corHalf = corridorDepth / 2f;
+            var maxSize = _mode != ArenaMode.Normal ? corHalf * 0.4f : 3f;
             var hazardSize = Mathf.Clamp(_arenaWidth * 0.15f, 1f, maxSize);
             var halfW = _arenaWidth / 2f - hazardSize;
             var halfD = _arenaDepth / 2f - hazardSize;
@@ -450,19 +526,28 @@ namespace RL
             for (var attempt = 0; attempt < 50; attempt++)
             {
                 Vector3 localPos;
-                if (_counterflowActive)
+                switch (_mode)
                 {
-                    localPos = new Vector3(
-                        Random.Range(-halfW * 0.4f, halfW * 0.4f),
-                        1f,
-                        Random.Range(-halfD, halfD));
-                }
-                else
-                {
-                    localPos = new Vector3(
-                        Random.Range(-halfW, halfW),
-                        1f,
-                        Random.Range(-halfD, 0f));
+                    case ArenaMode.Counterflow:
+                        localPos = new Vector3(
+                            Random.Range(-halfW * 0.4f, halfW * 0.4f), 1f,
+                            Random.Range(-corHalf + 1f, corHalf - 1f));
+                        break;
+                    case ArenaMode.Crossing:
+                        if (Random.value > 0.5f)
+                            localPos = new Vector3(
+                                Random.Range(-corHalf + 0.5f, corHalf - 0.5f), 1f,
+                                Random.Range(-halfD + 1f, halfD - 1f));
+                        else
+                            localPos = new Vector3(
+                                Random.Range(-halfW + 1f, halfW - 1f), 1f,
+                                Random.Range(-corHalf + 0.5f, corHalf - 0.5f));
+                        break;
+                    default:
+                        localPos = new Vector3(
+                            Random.Range(-halfW, halfW), 1f,
+                            Random.Range(-halfD + 1f, halfD - 1f));
+                        break;
                 }
 
                 if (!IsSpawnClear(transform.TransformPoint(localPos), hazardSize)) continue;

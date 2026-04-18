@@ -11,6 +11,8 @@ behaviors:
       lambd: 0.95
       num_epoch: 3
       learning_rate_schedule: linear
+      beta_schedule: linear
+      epsilon_schedule: linear
 
     network_settings:
       normalize: true
@@ -23,10 +25,10 @@ behaviors:
         gamma: 0.99
         strength: 1.0
 
-    max_steps: 30000000
+    max_steps: 20000000
     time_horizon: 512
-    summary_freq: 10000
-    keep_checkpoints: 5
+    summary_freq: 30000
+    keep_checkpoints: 20
     checkpoint_interval: 500000
     threaded: false
 
@@ -84,7 +86,7 @@ environment_parameters:
           sampler_type: uniform
           sampler_parameters:
             min_value: 30.0
-            max_value: 60.0
+            max_value: 80.0
       - name: Lesson6_Threat
         value:
           sampler_type: uniform

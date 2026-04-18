@@ -12,7 +12,7 @@ namespace RL
     public class RLAgent : Agent
     {
         [Header("Movement")]
-        public float maxRotation = 180f;
+        public float relaxationTime = 0.3f;
         [NonSerialized] public float Radius;
         [NonSerialized] public float MaxAgentSpeed;
 
@@ -24,12 +24,10 @@ namespace RL
         public float timeoutPenalty = -1.0f;
         public float timePenalty = -0.001f;
         public float wallCollisionPenalty = -0.01f;
-        public float agentCollisionPenalty = -0.001f;
-        public float stagnationPenalty = -0.05f;
+        public float agentCollisionPenalty = -0.1f;
+        public float stagnationPenalty = -0.2f;
         public float distanceRewardScale = 0.5f;
-        public float hazardProximityPenalty = -0.05f;
-        public float hazardContactPenalty = -0.5f;
-        public float hazardDetectionRadius = 3f;
+        public float hazardContactPenalty = -3.0f;
 
         [Header("Stagnation")]
         public int stagnationCheckSteps = 50;
@@ -40,6 +38,7 @@ namespace RL
 
         private MetricsAgent _metrics;
         private Vector3 _velocity;
+        private bool _wasInHazard;
         private float _prevDistToGoal;
         private Vector3 _stagnationCheckPos;
         private int _stepsSinceStagnationCheck;
@@ -52,6 +51,13 @@ namespace RL
 
         private readonly Collider[] _wallBuffer = new Collider[8];
         private readonly Collider[] _agentBuffer = new Collider[32];
+
+        public Vector3 Velocity => _velocity;
+
+        public void SetInitialVelocity(Vector3 v)
+        {
+            _velocity = v;
+        }
 
         public override void Initialize()
         {
@@ -66,6 +72,7 @@ namespace RL
         public override void OnEpisodeBegin()
         {
             _velocity = Vector3.zero;
+            _wasInHazard = false;
 
             if (trainingManager)
                 trainingManager.OnAgentEpisodeBegin(gameObject);
@@ -98,21 +105,79 @@ namespace RL
             sensor.AddObservation(localVel.x / MaxAgentSpeed);
             sensor.AddObservation(localVel.z / MaxAgentSpeed);
             sensor.AddObservation(Radius / AgentConfig.MaxRadius);
+
+            ObserveNearestNeighbors(sensor, 3);
+        }
+
+        private static readonly (float sqr, RLAgent agent)[] _neighborBuffer = new (float, RLAgent)[32];
+
+        private void ObserveNearestNeighbors(VectorSensor sensor, int k)
+        {
+            const float searchRadius = 3f;
+            var count = Physics.OverlapSphereNonAlloc(
+                transform.position + Vector3.up * 0.5f, searchRadius, _agentBuffer, _agentMask);
+
+            var found = 0;
+            for (var i = 0; i < count && found < _neighborBuffer.Length; i++)
+            {
+                var other = _agentBuffer[i].GetComponent<RLAgent>();
+                if (!other || other == this) continue;
+                var sqr = (other.transform.position - transform.position).sqrMagnitude;
+                _neighborBuffer[found++] = (sqr, other);
+            }
+
+            for (var i = 1; i < found; i++)
+            {
+                var cur = _neighborBuffer[i];
+                var j = i - 1;
+                while (j >= 0 && _neighborBuffer[j].sqr > cur.sqr)
+                {
+                    _neighborBuffer[j + 1] = _neighborBuffer[j];
+                    j--;
+                }
+                _neighborBuffer[j + 1] = cur;
+            }
+
+            for (var i = 0; i < k; i++)
+            {
+                if (i < found)
+                {
+                    var other = _neighborBuffer[i].agent;
+                    var relPos = other.transform.position - transform.position;
+                    relPos.y = 0f;
+                    var localRelPos = transform.InverseTransformDirection(relPos);
+                    var relVel = other.Velocity - _velocity;
+                    var localRelVel = transform.InverseTransformDirection(relVel);
+                    sensor.AddObservation(localRelPos.x / searchRadius);
+                    sensor.AddObservation(localRelPos.z / searchRadius);
+                    sensor.AddObservation(localRelVel.x / MaxAgentSpeed);
+                    sensor.AddObservation(localRelVel.z / MaxAgentSpeed);
+                }
+                else
+                {
+                    sensor.AddObservation(0f);
+                    sensor.AddObservation(0f);
+                    sensor.AddObservation(0f);
+                    sensor.AddObservation(0f);
+                }
+            }
         }
 
         public override void OnActionReceived(ActionBuffers actions)
         {
-            var forceAction = Mathf.Clamp(actions.ContinuousActions[0], -0.3f, 1f);
-            var rotationAction = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
+            var vxAction = Mathf.Clamp(actions.ContinuousActions[0], -1f, 1f);
+            var vzAction = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
 
-            transform.Rotate(0f, rotationAction * maxRotation * Time.fixedDeltaTime, 0f);
+            var desiredVelocity = new Vector3(vxAction, 0f, vzAction) * MaxAgentSpeed;
+            if (desiredVelocity.magnitude > MaxAgentSpeed)
+                desiredVelocity = desiredVelocity.normalized * MaxAgentSpeed;
 
-            _velocity += transform.forward * (forceAction * AgentConfig.MaxForce / AgentConfig.Mass * Time.fixedDeltaTime);
-            if (_velocity.magnitude > MaxAgentSpeed)
-                _velocity = _velocity.normalized * MaxAgentSpeed;
-            _velocity *= 1f - 0.5f * Time.fixedDeltaTime;
+            _velocity = Vector3.Lerp(_velocity, desiredVelocity, Time.fixedDeltaTime / relaxationTime);
 
             transform.position += _velocity * Time.fixedDeltaTime;
+
+            if (_velocity.sqrMagnitude > 0.01f)
+                transform.rotation = Quaternion.LookRotation(_velocity);
 
             ResolveWallCollisions();
             ResolveAgentCollisions();
@@ -136,7 +201,7 @@ namespace RL
         private void RewardCollisions()
         {
             var wallHit = false;
-            var agentHit = false;
+            var maxVRelScale = 0f;
 
             var count = Physics.OverlapSphereNonAlloc(
                 transform.position + Vector3.up * 0.5f, Radius, _agentBuffer, _agentMask | _wallMask);
@@ -153,16 +218,22 @@ namespace RL
                 }
                 else if (col.gameObject.layer == _agentLayer)
                 {
-                    agentHit = true;
+                    var otherAgent = col.GetComponent<RLAgent>();
+                    var vRel = otherAgent ? (_velocity - otherAgent.Velocity).magnitude : _velocity.magnitude;
+                    var vRelNorm = vRel / MaxAgentSpeed;
+                    var scale = vRelNorm * vRelNorm;
+                    if (scale > maxVRelScale)
+                        maxVRelScale = scale;
+
                     var otherMetrics = col.GetComponent<MetricsAgent>();
                     _metrics.ReportCollision("Agent", otherMetrics ? otherMetrics.agentId : -1);
                 }
             }
 
-            if (wallHit) 
+            if (wallHit)
                 AddReward(wallCollisionPenalty);
-            if (agentHit) 
-                AddReward(agentCollisionPenalty);
+            if (maxVRelScale > 0f)
+                AddReward(agentCollisionPenalty * maxVRelScale);
         }
 
         private void RewardDistance()
@@ -175,10 +246,12 @@ namespace RL
 
         private void RewardHazard()
         {
-            if (Physics.CheckSphere(transform.position, Radius, _hazardMask))
+            var inHazard = Physics.CheckSphere(transform.position, Radius, _hazardMask);
+
+            if (inHazard && !_wasInHazard)
                 AddReward(hazardContactPenalty);
-            else if (Physics.CheckSphere(transform.position, hazardDetectionRadius, _hazardMask))
-                AddReward(hazardProximityPenalty);
+
+            _wasInHazard = inHazard;
         }
 
         private void CheckStagnation()
@@ -259,7 +332,7 @@ namespace RL
                 if (overlap <= 0f) continue;
 
                 var normal = dist > 0.001f ? diff / dist : Vector3.right;
-                transform.position += normal * (overlap * 0.3f);
+                transform.position += normal * (overlap * 0.5f);
                 var velInto = Vector3.Dot(_velocity, -normal);
                 if (velInto > 0)
                     _velocity += normal * (velInto * 0.5f);
@@ -269,8 +342,8 @@ namespace RL
         public override void Heuristic(in ActionBuffers actionsOut)
         {
             var ca = actionsOut.ContinuousActions;
-            ca[0] = Input.GetAxis("Vertical");
-            ca[1] = Input.GetAxis("Horizontal");
+            ca[0] = Input.GetAxis("Horizontal");
+            ca[1] = Input.GetAxis("Vertical");
         }
     }
 }

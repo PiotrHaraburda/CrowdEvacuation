@@ -170,7 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   goal: {fileID: 0}
   A: 2000
-  B: 0.16
+  B: 0.08
   k: 120000
   kappa: 240000
   tau: 0.5

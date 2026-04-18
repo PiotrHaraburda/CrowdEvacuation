@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Ghost;
 using Metrics;
 using UnityEngine;
 using Utility;
-using Random = UnityEngine.Random;
 
 namespace RL
 {
@@ -16,6 +16,11 @@ namespace RL
         [Header("References")]
         public EvacuationMetricsLogger metricsLogger;
 
+        [Header("Empirical data")]
+        public string dataFolderPath = "";
+        public string fileName = "";
+        public Vector2 dataOffset = Vector2.zero;
+
         [Header("Spawn streams")]
         public SpawnStream[] streams;
 
@@ -24,106 +29,135 @@ namespace RL
         {
             public string name;
             public Transform goal;
-            public int agentCount;
-            public float spawnRate;
-            public float minX, maxX;
-            public float minZ, maxZ;
-            public float minSpawnDist = 0.38f;
+            public float filterMinX, filterMaxX;
+            public float filterMinZ, filterMaxZ;
+        }
+
+        private struct PendingSpawn
+        {
+            public int AgentId;
+            public float Time;
+            public Vector3 Position;
+            public Vector3 InitialVelocity;
+            public Transform Goal;
         }
 
         private readonly List<GameObject> _spawnedAgents = new();
-        private int _nextId = 1;
+        private readonly List<PendingSpawn> _pending = new();
+        private float _simStart;
 
         private void Start()
         {
-            var total = 0;
-            foreach (var s in streams)
-            {
-                total += s.agentCount;
-            }
-            metricsLogger.totalAgents = total;
+            _simStart = Time.time;
+            LoadEmpiricalSpawns();
+        }
 
-            foreach (var stream in streams)
+        private void LoadEmpiricalSpawns()
+        {
+            var filePath = Path.Combine(dataFolderPath, fileName);
+            if (!File.Exists(filePath))
             {
-                if (stream.spawnRate <= 0f)
-                    SpawnAllInStream(stream);
-                else
-                    StartCoroutine(SpawnGradually(stream));
+                return;
+            }
+
+            var json = File.ReadAllText(filePath);
+            var wrapped = "{\"agents\":" + json + "}";
+            var episode = JsonUtility.FromJson<EpisodeData>(wrapped);
+
+            if (episode?.agents == null)
+            {
+                return;
+            }
+
+            var unassigned = 0;
+            foreach (var agent in episode.agents)
+            {
+                if (agent.x == null || agent.x.Length == 0 || agent.t == null || agent.t.Length == 0)
+                    continue;
+
+                var x0 = agent.x[0] - dataOffset.x;
+                var z0 = agent.y[0] - dataOffset.y;
+
+                var initialVelocity = Vector3.zero;
+                if (agent.x.Length > 1 && agent.t.Length > 1)
+                {
+                    var dt = agent.t[1] - agent.t[0];
+                    if (dt > 0.0001f)
+                    {
+                        var vx = ((agent.x[1] - dataOffset.x) - x0) / dt;
+                        var vz = ((agent.y[1] - dataOffset.y) - z0) / dt;
+                        initialVelocity = new Vector3(vx, 0f, vz);
+                    }
+                }
+
+                var matched = false;
+                foreach (var stream in streams)
+                {
+                    if (x0 < stream.filterMinX || x0 > stream.filterMaxX) continue;
+                    if (z0 < stream.filterMinZ || z0 > stream.filterMaxZ) continue;
+
+                    _pending.Add(new PendingSpawn
+                    {
+                        AgentId = agent.id,
+                        Time = agent.t[0],
+                        Position = new Vector3(x0, 1f, z0),
+                        InitialVelocity = initialVelocity,
+                        Goal = stream.goal
+                    });
+                    matched = true;
+                    break;
+                }
+
+                if (!matched) 
+                    unassigned++;
+            }
+
+            _pending.Sort((a, b) => a.Time.CompareTo(b.Time));
+
+            metricsLogger.totalAgents = _pending.Count;
+
+            if (unassigned > 0)
+                Debug.LogWarning($"[RL] {unassigned} empirical agents unmatched to any spawn stream");
+        }
+
+        private void FixedUpdate()
+        {
+            var elapsed = Time.time - _simStart;
+            while (_pending.Count > 0 && _pending[0].Time <= elapsed)
+            {
+                SpawnAgent(_pending[0]);
+                _pending.RemoveAt(0);
             }
         }
 
-        private void SpawnAllInStream(SpawnStream stream)
+        private void SpawnAgent(PendingSpawn spawn)
         {
-            for (var i = 0; i < stream.agentCount; i++)
-                SpawnOne(stream);
+            var dirToGoal = (spawn.Goal.position - spawn.Position).normalized;
+            dirToGoal.y = 0f;
+            var rotation = dirToGoal.sqrMagnitude > 0.0001f
+                ? Quaternion.LookRotation(dirToGoal)
+                : Quaternion.identity;
 
-            metricsLogger.RegisterAgents();
-        }
-
-        private IEnumerator SpawnGradually(SpawnStream stream)
-        {
-            var delay = 1f / stream.spawnRate;
-            for (var i = 0; i < stream.agentCount; i++)
-            {
-                SpawnOne(stream);
-                yield return new WaitForSeconds(delay);
-            }
-        }
-
-        private void SpawnOne(SpawnStream stream)
-        {
-            var pos = FindSpawnPosition(stream);
-            if (!pos.HasValue) return;
-
-            var dirToGoal = (stream.goal.position - pos.Value).normalized;
-            dirToGoal.y = 0;
-            var rotation = Quaternion.LookRotation(dirToGoal);
-            var go = Instantiate(agentPrefab, pos.Value, rotation, transform);
-            go.name = $"RL_Agent_{_nextId}";
+            var go = Instantiate(agentPrefab, spawn.Position, rotation, transform);
+            go.name = $"RL_Agent_{spawn.AgentId}";
             go.layer = LayerMask.NameToLayer("Agent");
 
             var agent = go.GetComponent<RLAgent>();
-            agent.goal = stream.goal;
+            agent.goal = spawn.Goal;
             agent.Radius = AgentConfig.SampleRadius();
             agent.MaxAgentSpeed = AgentConfig.SampleDesiredSpeed() * AgentConfig.VelocityClamp;
+            agent.SetInitialVelocity(spawn.InitialVelocity);
 
             var d = agent.Radius * 2f;
             go.transform.localScale = new Vector3(d, go.transform.localScale.y, d);
             go.GetComponent<CapsuleCollider>().isTrigger = true;
 
             var ma = go.GetComponent<MetricsAgent>();
-            ma.agentId = _nextId;
+            ma.agentId = spawn.AgentId;
             ma.RegisterLogger(metricsLogger);
             metricsLogger.RegisterAgent(ma);
 
             _spawnedAgents.Add(go);
-            _nextId++;
-        }
-
-        private Vector3? FindSpawnPosition(SpawnStream stream)
-        {
-            for (var attempt = 0; attempt < 200; attempt++)
-            {
-                var pos = new Vector3(
-                    Random.Range(stream.minX, stream.maxX), 1f,
-                    Random.Range(stream.minZ, stream.maxZ));
-
-                var clear = true;
-                foreach (var go in _spawnedAgents)
-                {
-                    if (!go || !go.activeSelf) continue;
-                    if (Vector3.Distance(go.transform.position, pos) < stream.minSpawnDist)
-                    {
-                        clear = false;
-                        break;
-                    }
-                }
-
-                if (clear)
-                    return pos;
-            }
-
-            return null;
         }
     }
 }

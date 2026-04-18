@@ -6,12 +6,23 @@ using UnityEngine;
 
 namespace Metrics
 {
+    public enum ModelType { Ghost, SFM, RL }
+    public enum ScenarioId { NarrowDoor, Crossing90 }
+
     public class EvacuationMetricsLogger : MonoBehaviour
     {
-        [Header("Run identity")] 
-        public string modelType = "SFM";
-        public string scenarioId = "NarrowDoor";
-        public string runId = "run_001";
+        [Header("Run identity")]
+        public ModelType modelType = ModelType.SFM;
+        public ScenarioId scenarioId = ScenarioId.NarrowDoor;
+        public string runSuffix = "";
+
+        private string EpisodeId => scenarioId == ScenarioId.NarrowDoor ? "LC_001" : "D_003";
+
+        private string RunId => modelType == ModelType.Ghost
+            ? EpisodeId
+            : string.IsNullOrEmpty(runSuffix)
+                ? $"{EpisodeId}_{modelType}"
+                : $"{EpisodeId}_{modelType}_{runSuffix}";
         public string outputDirectory = "Metrics";
 
         [Header("Geometry")] 
@@ -118,10 +129,10 @@ namespace Metrics
         private void SampleFrame(MetricsAgent[] active)
         {
             var d1 = MeasureLocalDensityCircle(active, exitMeasurementPoint, densityMeasurementRadius);
-            var d2 = exitMeasurementPoint2 != null 
+            var d2 = exitMeasurementPoint2 
                 ? MeasureLocalDensityCircle(active, exitMeasurementPoint2, densityMeasurementRadius) 
                 : 0f;
-            var exitDensity = exitMeasurementPoint2 != null ? (d1 + d2) / 2f : d1;
+            var exitDensity = exitMeasurementPoint2 ? (d1 + d2) / 2f : d1;
 
             var count = active.Length;
 
@@ -148,12 +159,22 @@ namespace Metrics
                 return;
             }
 
-            var exitAgents = active.Where(a =>
+            var exitAgents1 = active.Where(a =>
                 exitMeasurementPoint &&
                 Vector3.Distance(a.transform.position, exitMeasurementPoint.position) <= densityMeasurementRadius
             ).ToArray();
-            var exitSpeed = exitAgents.Length > 0 ? exitAgents.Average(a => a.GetLastSpeed()) : 0f;
-            var specificFlow = exitDensity * exitSpeed;
+            var s1 = exitAgents1.Length > 0 ? exitAgents1.Average(a => a.GetLastSpeed()) : 0f;
+
+            var s2 = 0f;
+            if (exitMeasurementPoint2)
+            {
+                var exitAgents2 = active.Where(a =>
+                    Vector3.Distance(a.transform.position, exitMeasurementPoint2.position) <= densityMeasurementRadius
+                ).ToArray();
+                s2 = exitAgents2.Length > 0 ? exitAgents2.Average(a => a.GetLastSpeed()) : 0f;
+            }
+
+            var specificFlow = exitMeasurementPoint2 ? (d1 * s1 + d2 * s2) / 2f : d1 * s1;
             _specificFlowTimeSeriesDetailed.Add((elapsedTime, exitDensity, specificFlow));
         }
 
@@ -224,7 +245,7 @@ namespace Metrics
 
                 var nearbyCount = 0;
                 var speedSum = 0f;
-                var measureRadius = 2f;
+                var measureRadius = 1f;
 
                 foreach (var other in active)
                 {
@@ -244,8 +265,7 @@ namespace Metrics
                 var localDensity = (nearbyCount + 1) / (Mathf.PI * measureRadius * measureRadius);
                 var localSpeed = (agent.GetLastSpeed() + speedSum) / (nearbyCount + 1);
 
-                if (localDensity > 0.1f)
-                    _fundamentalDiagramRecords.Add((elapsedTime, localDensity, localSpeed));
+                _fundamentalDiagramRecords.Add((elapsedTime, localDensity, localSpeed));
             }
         }
 
@@ -338,7 +358,7 @@ namespace Metrics
                 return;
             }
             
-            var dir = Path.Combine(projectRoot, outputDirectory, scenarioId, runId);
+            var dir = Path.Combine(projectRoot, outputDirectory, scenarioId.ToString(), RunId);
             Directory.CreateDirectory(dir);
 
             WriteAgentsCsv(dir);
@@ -466,7 +486,7 @@ namespace Metrics
             var sb = new StringBuilder("metric;value\n");
             sb.AppendLine($"model_type;{modelType}");
             sb.AppendLine($"scenario_id;{scenarioId}");
-            sb.AppendLine($"run_id;{runId}");
+            sb.AppendLine($"run_id;{RunId}");
             sb.AppendLine($"total_agents;{totalAgents}");
             sb.AppendLine($"rset_100s;{rset100:F3}");
             sb.AppendLine($"rset_95s;{rset95:F3}");
@@ -504,9 +524,9 @@ namespace Metrics
 
             var exitId = scenarioId switch
             {
-                "NarrowDoor" when pos.z < -1.1f => "ExitZone",
-                "Crossing90" when pos.z < -4.25f => "Exit_South",
-                "Crossing90" when pos.x < -4.75f => "Exit_West",
+                ScenarioId.NarrowDoor when pos.z < -1.1f => "ExitZone",
+                ScenarioId.Crossing90 when pos.z < -4.25f => "Exit_South",
+                ScenarioId.Crossing90 when pos.x < -4.75f => "Exit_West",
                 _ => null
             };
 

@@ -14,9 +14,9 @@ C_SFM = '#FF5722'
 C_RL = '#4CAF50'
 
 models = [
-    ('Ghost', C_GHOST, 'D_007'),
-    ('SFM', C_SFM, 'D_007_SFM_cal_20'),
-    ('RL', C_RL, 'D_007_RL'),
+    ('Ghost', C_GHOST, 'D_003'),
+    ('SFM', C_SFM, 'D_003_SFM'),
+    ('RL', C_RL, 'D_003_RL'),
 ]
 
 
@@ -308,7 +308,7 @@ ax.set_title('(p) Flow–Density J(ρ)')
 ax.legend(fontsize=8)
 ax.grid(True, alpha=0.3)
 
-plt.suptitle('Crossing90 D_007 (entrance 2.4m) - Ghost vs SFM vs RL',
+plt.suptitle('Crossing90 D_003 (entrance 1.2m) - Ghost vs SFM vs RL',
              fontsize=14, fontweight='bold', y=1.0)
-plt.savefig('./Charts/crossing90_d007_comparison.png', dpi=150, bbox_inches='tight')
+plt.savefig('./Charts/crossing90_d003_comparison.png', dpi=150, bbox_inches='tight')
 print("\nDone")

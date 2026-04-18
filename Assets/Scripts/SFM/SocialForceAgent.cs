@@ -41,6 +41,11 @@ namespace SFM
             _ma = GetComponent<MetricsAgent>();
         }
 
+        public void SetInitialVelocity(Vector3 v)
+        {
+            velocity = v;
+        }
+
         private void OnEnable() => AllAgents.Add(this);
 
         private void OnDisable()

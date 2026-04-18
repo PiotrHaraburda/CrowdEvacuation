@@ -794,7 +794,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataFolderPath: C:/Users/Piotr/CrowdEvacuation/Trajectories/data_processed/crossing
-  specificFileName: D_007.json
+  specificFileName: D_003.json
   ghostPrefab: {fileID: 793577169775243660, guid: 5d3a2dd6351051440a443cc034cd3a2a, type: 3}
   dataOffset: {x: 0, y: 0}
   metricsLogger: {fileID: 1607329508}
@@ -844,25 +844,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfmAgentPrefab: {fileID: 793577169775243660, guid: 579bf81a64004614fbae60dfc4ab10b8, type: 3}
   metricsLogger: {fileID: 1607329508}
+  dataFolderPath: C:/Users/Piotr/CrowdEvacuation/Trajectories/data_processed/crossing
+  fileName: D_003.json
+  dataOffset: {x: 0, y: 0}
   streams:
   - name: N - S
     goal: {fileID: 216961355}
-    agentCount: 328
-    spawnRate: 2.4
-    minX: -1.6
-    maxX: 2.1
-    minZ: 6
-    maxZ: 8
-    minSpawnDist: 0.38
+    filterMinX: -10
+    filterMaxX: 10
+    filterMinZ: 4
+    filterMaxZ: 15
   - name: E - W
     goal: {fileID: 595133192}
-    agentCount: 278
-    spawnRate: 3.42
-    minX: 5.5
-    maxX: 7
-    minZ: -0.5
-    maxZ: 2.4
-    minSpawnDist: 0.38
+    filterMinX: 4
+    filterMaxX: 15
+    filterMinZ: -10
+    filterMaxZ: 10
 --- !u!4 &1091167414
 Transform:
   m_ObjectHideFlags: 0
@@ -1418,25 +1415,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agentPrefab: {fileID: 793577169775243660, guid: 110453db64a580f45accc4de399cfe08, type: 3}
   metricsLogger: {fileID: 1607329508}
+  dataFolderPath: C:/Users/Piotr/CrowdEvacuation/Trajectories/data_processed/crossing
+  fileName: D_003.json
+  dataOffset: {x: 0, y: 0}
   streams:
   - name: N - S
     goal: {fileID: 216961355}
-    agentCount: 328
-    spawnRate: 2.4
-    minX: -1.6
-    maxX: 2.1
-    minZ: 6
-    maxZ: 8
-    minSpawnDist: 0.38
+    filterMinX: -10
+    filterMaxX: 10
+    filterMinZ: 4
+    filterMaxZ: 15
   - name: E - W
     goal: {fileID: 595133192}
-    agentCount: 278
-    spawnRate: 3.42
-    minX: 5.5
-    maxX: 7
-    minZ: -0.5
-    maxZ: 2.4
-    minSpawnDist: 0.38
+    filterMinX: 4
+    filterMaxX: 15
+    filterMinZ: -10
+    filterMaxZ: 10
 --- !u!1 &1607329507
 GameObject:
   m_ObjectHideFlags: 0
@@ -1466,9 +1460,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6341b28d9c34a958cd95eb910b24909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: RL
-  scenarioId: Crossing90
-  runId: D_007_RL
+  modelType: 2
+  scenarioId: 1
+  runSuffix: 
   outputDirectory: Metrics
   densityMeasurementRadius: 2
   exitMeasurementPoint: {fileID: 1406471064}
@@ -1478,10 +1472,10 @@ MonoBehaviour:
   headwaySampleInterval: 0.25
   fdSampleInterval: 0.5
   heatmapSampleInterval: 2
-  measureZoneMinX: -5
-  measureZoneMaxX: 6.5
-  measureZoneMinZ: -4.5
-  measureZoneMaxZ: 7
+  measureZoneMinX: -1
+  measureZoneMaxX: 1
+  measureZoneMinZ: 0
+  measureZoneMaxZ: 2
   totalAgents: 0
   evacuatedAgents: 0
   elapsedTime: 0

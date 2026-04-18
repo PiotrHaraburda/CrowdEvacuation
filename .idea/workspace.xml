@@ -6,20 +6,42 @@
   <component name="ChangeListManager">
     <list default="true" id="84eea257-372f-4676-b074-99441a65da73" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assembly-CSharp.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Assembly-CSharp.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Config/Evacuation.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Config/Evacuation.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_Crossing_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_Crossing_timers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_NarrowDoor_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_NarrowDoor_timers.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Training_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Training_timers.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Models/RL_Agent.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Models/RL_Agent.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Models/SFM_Agent.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Models/SFM_Agent.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Training.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Training.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Metrics/MetricsAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Metrics/MetricsAgent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/RL/RLAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/RL/RLAgent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/RL/TrainingEnvironmentManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/RL/TrainingEnvironmentManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Utility/AgentConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Utility/AgentConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CrowdEvacuation.sln" beforeDir="false" afterPath="$PROJECT_DIR$/CrowdEvacuation.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/crossing_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/crossing_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Metrics/narrow_door_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/narrow_door_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Metrics/EvacuationMetricsLogger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Metrics/EvacuationMetricsLogger.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/RL/RLManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/RL/RLManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/SFM/SFMManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/SFM/SFMManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Charts/crossing90_d007_comparison.png" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Charts/crossing90_d007_comparison.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/agents_frame.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/agents_frame.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/collisions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/collisions.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/density_heatmap.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/density_heatmap.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/evacuation_curve.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/evacuation_curve.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/fundamental_diagram.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/fundamental_diagram.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/headway.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/headway.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/specific_flow_series.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/specific_flow_series.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/summary.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/throughput.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_RL/throughput.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/agents_frame.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/agents_frame.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/collisions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/collisions.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/density_heatmap.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/density_heatmap.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/evacuation_curve.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/evacuation_curve.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/fundamental_diagram.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/fundamental_diagram.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/headway.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/headway.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/specific_flow_series.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/specific_flow_series.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/summary.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/throughput.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/Crossing90/D_007_SFM_cal_20/throughput.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/agents_frame.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/agents_frame.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/collisions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/collisions.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/density_heatmap.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/density_heatmap.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/evacuation_curve.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/evacuation_curve.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/fundamental_diagram.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/fundamental_diagram.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/headway.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/headway.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/specific_flow_series.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/specific_flow_series.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/summary.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/summary.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/throughput.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/NarrowDoor/LC_001_RL/throughput.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProjectSettings/TimeManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TimeManager.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" afterDir="false" />

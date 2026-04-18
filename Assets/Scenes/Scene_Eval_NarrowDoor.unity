@@ -474,16 +474,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfmAgentPrefab: {fileID: 793577169775243660, guid: 579bf81a64004614fbae60dfc4ab10b8, type: 3}
   metricsLogger: {fileID: 1788929301}
+  dataFolderPath: C:/Users/Piotr/CrowdEvacuation/Trajectories/data_processed/narrow_door
+  fileName: LC_001.json
+  dataOffset: {x: -0.3347, y: 0}
   streams:
   - name: Room
     goal: {fileID: 641944381}
-    agentCount: 93
-    spawnRate: 0
-    minX: -4
-    maxX: 3.5
-    minZ: -0.5
-    maxZ: 4
-    minSpawnDist: 0.38
+    filterMinX: -10
+    filterMaxX: 10
+    filterMinZ: -10
+    filterMaxZ: 10
 --- !u!4 &262200797
 Transform:
   m_ObjectHideFlags: 0
@@ -530,15 +530,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agentPrefab: {fileID: 793577169775243660, guid: 110453db64a580f45accc4de399cfe08, type: 3}
   metricsLogger: {fileID: 1788929301}
+  dataFolderPath: C:/Users/Piotr/CrowdEvacuation/Trajectories/data_processed/narrow_door
+  fileName: LC_001.json
+  dataOffset: {x: -0.3347, y: 0}
   streams:
   - name: Room
     goal: {fileID: 641944381}
-    agentCount: 93
-    spawnRate: 0
-    minX: -4
-    maxX: 3.5
-    minZ: -0.5
-    maxZ: 4
+    filterMinX: -10
+    filterMaxX: 10
+    filterMinZ: -10
+    filterMaxZ: 10
 --- !u!4 &493967231
 Transform:
   m_ObjectHideFlags: 0
@@ -1128,9 +1129,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6341b28d9c34a958cd95eb910b24909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: RL
-  scenarioId: NarrowDoor
-  runId: LC_001_RL
+  modelType: 2
+  scenarioId: 0
+  runSuffix: 
   outputDirectory: Metrics
   densityMeasurementRadius: 0.5
   exitMeasurementPoint: {fileID: 1995288927}
@@ -1140,10 +1141,10 @@ MonoBehaviour:
   headwaySampleInterval: 0.25
   fdSampleInterval: 0.5
   heatmapSampleInterval: 2
-  measureZoneMinX: -2.8
-  measureZoneMaxX: 2.4
-  measureZoneMinZ: -1.2
-  measureZoneMaxZ: 1.7
+  measureZoneMinX: -0.5
+  measureZoneMaxX: 0.5
+  measureZoneMinZ: -1.1
+  measureZoneMaxZ: 0.1
   totalAgents: 0
   evacuatedAgents: 0
   elapsedTime: 0

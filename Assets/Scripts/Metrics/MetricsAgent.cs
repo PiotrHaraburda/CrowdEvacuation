@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Metrics
@@ -13,7 +14,7 @@ namespace Metrics
         private float _prevSpeedTime;
         private bool _useOverrideSpeed;
         
-        private static Collider[] _exitColliders;
+        private Collider[] _exitColliders;
 
         public void RegisterLogger(EvacuationMetricsLogger logger)
         {
@@ -86,14 +87,22 @@ namespace Metrics
             return true;
         }
 
-        private static Collider FindOverlappingExit(Vector3 pos)
+        private Collider FindOverlappingExit(Vector3 pos)
         {
             if (_exitColliders == null)
             {
-                var exits = GameObject.FindGameObjectsWithTag("Exit");
-                _exitColliders = new Collider[exits.Length];
-                for (var i = 0; i < exits.Length; i++)
-                    _exitColliders[i] = exits[i].GetComponent<Collider>();
+                var root = transform.parent ? transform.parent : transform;
+                var exits = new List<Collider>();
+                foreach (Transform child in root)
+                {
+                    if (child.CompareTag("Exit"))
+                    {
+                        var col = child.GetComponent<Collider>();
+                        if (col) 
+                            exits.Add(col);
+                    }
+                }
+                _exitColliders = exits.ToArray();
             }
 
             foreach (var col in _exitColliders)
@@ -112,10 +121,6 @@ namespace Metrics
             _prevSpeedTime = Time.time;
             _prevSpeed = 0f;
             _useOverrideSpeed = false;
-        }
-
-        public static void ResetExitCache()
-        {
             _exitColliders = null;
         }
     }
