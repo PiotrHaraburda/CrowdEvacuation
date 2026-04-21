@@ -15,8 +15,8 @@ C_RL = '#4CAF50'
 
 models = [
     ('Ghost', C_GHOST, 'LC_001'),
-    ('SFM', C_SFM, 'LC_001_SFM_cal_23'),
-    ('RL', C_RL, 'LC_001_RL'),
+    ('SFM', C_SFM, 'LC_001_SFM_run3'),
+    ('RL', C_RL, 'LC_001_RL_run3'),
 ]
 
 
@@ -67,11 +67,10 @@ for name in data:
     if len(tp) > 1:
         intervals = tp['time'].diff().dropna()
         roll = intervals.rolling(window=5, center=True).mean()
-        ax.plot(tp['time'].iloc[1:], roll, color=colors[name], linewidth=1.5, alpha=0.8,
-                label=f'{name} (5-agent avg)')
+        ax.plot(tp['time'].iloc[1:], roll, color=colors[name], linewidth=1.5, alpha=0.8, label=f'{name} (5-agent avg)')
 ax.set_xlabel('Time [s]')
 ax.set_ylabel('Inter-exit interval [s]')
-ax.set_title('(b) Time Between Consecutive Exits')
+ax.set_title('(b) Time Between Exits')
 ax.legend(fontsize=7)
 ax.grid(True, alpha=0.3)
 ax.set_xlim(0)
@@ -108,8 +107,7 @@ for label, key, unit in metrics_show:
     table_data.append(row)
 
 col_labels = ['Metric'] + list(data.keys())
-table = ax.table(cellText=table_data, colLabels=col_labels, cellLoc='center', loc='center',
-                 colWidths=[0.30] + [0.22] * len(data))
+table = ax.table(cellText=table_data, colLabels=col_labels, cellLoc='center', loc='center', colWidths=[0.30] + [0.22] * len(data))
 table.auto_set_font_size(False)
 table.set_fontsize(7)
 table.scale(1, 1.3)
@@ -129,8 +127,7 @@ for name in data:
         fd_c['bin'] = pd.cut(fd_c['density'], bins)
         means = fd_c.groupby('bin', observed=False)['speed'].agg(['mean', 'std']).dropna()
         centers = [(b.left + b.right) / 2 for b in means.index]
-        ax.plot(centers, means['mean'].values, color=colors[name], linewidth=2.5,
-                marker='o', markersize=4, label=f'{name}')
+        ax.plot(centers, means['mean'].values, color=colors[name], linewidth=2.5, marker='o', markersize=4, label=f'{name}')
         ax.fill_between(centers, (means['mean'] - means['std']).values,
                         (means['mean'] + means['std']).values, color=colors[name], alpha=0.15)
 ax.set_xlabel('Local density [ped/m²]')
@@ -176,7 +173,7 @@ for name in data:
     ax.fill_between(sf['time'], 0, sf['specific_flow'], color=colors[name], alpha=0.06)
     ax.plot(sf['time'], smooth, color=colors[name], linewidth=1.5, label=name)
 ax.set_xlabel('Time [s]')
-ax.set_ylabel('Specific flow [ped/m/s]')
+ax.set_ylabel('Specific flow [ped/(m·s)]')
 ax.set_title('(g) Specific Flow at Exit')
 ax.legend(fontsize=7)
 ax.grid(True, alpha=0.3)
@@ -233,8 +230,7 @@ def make_heatmap(ax, df, title, vmin, vmax):
 vmax = max(d['hm'].groupby(['grid_x', 'grid_z'])['density'].mean().max() for d in data.values())
 hm_pvs = {}
 for i, name in enumerate(data):
-    hm_pvs[name] = make_heatmap(fig.add_subplot(gs[3, i]), data[name]['hm'],
-                                 f'({chr(106 + i)}) Density - {name}', 0, vmax)
+    hm_pvs[name] = make_heatmap(fig.add_subplot(gs[3, i]), data[name]['hm'], f'({chr(106 + i)}) Density - {name}', 0, vmax)
 
 # (m,n) Heatmap differences
 ax = fig.add_subplot(gs[4, 0])
@@ -299,15 +295,13 @@ for name in data:
         fd_c['bin'] = pd.cut(fd_c['density'], bins)
         means = fd_c.groupby('bin', observed=False)['flow'].mean().dropna()
         centers = [(b.left + b.right) / 2 for b in means.index]
-        ax.plot(centers, means.values, color=colors[name], linewidth=2.5,
-                marker='o', markersize=4, label=f'{name} (mean)')
+        ax.plot(centers, means.values, color=colors[name], linewidth=2.5, marker='o', markersize=4, label=f'{name} (mean)')
 ax.set_xlabel('Local density [ped/m²]')
-ax.set_ylabel('Flow [ped/m²/s]')
-ax.set_title('(p) Flow–Density J(ρ)')
+ax.set_ylabel('Specific flow [ped/(m·s)]')
+ax.set_title('(p) Flow–Density Js(ρ)')
 ax.legend(fontsize=8)
 ax.grid(True, alpha=0.3)
 
-plt.suptitle('NarrowDoor LC_001 - Ghost (Empirical) vs SFM vs RL',
-             fontsize=14, fontweight='bold', y=1.0)
+plt.suptitle('NarrowDoor LC_001 - Ghost (Empirical) vs SFM vs RL', fontsize=14, fontweight='bold', y=1.0)
 plt.savefig('./Charts/narrow_door_comparison.png', dpi=150, bbox_inches='tight')
 print("\nDone")

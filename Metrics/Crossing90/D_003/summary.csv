@@ -3,6 +3,8 @@ model_type;Ghost
 scenario_id;Crossing90
 run_id;D_003
 total_agents;608
+evacuated_agents;608
+evacuation_rate;1
 rset_100s;184
 rset_95s;166,4
 rset_90s;154,06

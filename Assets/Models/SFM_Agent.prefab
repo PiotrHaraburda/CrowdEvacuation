@@ -169,11 +169,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goal: {fileID: 0}
-  A: 2000
+  A: 1200
   B: 0.08
   k: 120000
   kappa: 240000
-  tau: 0.5
+  tau: 0.3
+  spawnWarmup: 0.5
   velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &3404147506092599087
 GameObject:

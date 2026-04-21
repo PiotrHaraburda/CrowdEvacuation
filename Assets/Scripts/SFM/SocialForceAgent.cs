@@ -24,14 +24,18 @@ namespace SFM
         public float k = 120000f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
         public float kappa = 240000f; // default from (Helbing, Farkas & Vicsek 2000), then calibrated
         public float tau = 0.5f; // default from (Helbing & Molnar 1995), then calibrated
+        public float spawnWarmup = 0.5f;
 
         [Header("State")]
         [SerializeField] private Vector3 velocity;
 
         private MetricsAgent _ma;
+        private float _spawnTime;
         private static readonly List<SocialForceAgent> AllAgents = new();
         private static Collider[] _wallColliders;
         private static bool _wallsCached;
+
+        public static void InvalidateWallCache() => _wallsCached = false;
 
         private void Awake()
         {
@@ -46,7 +50,11 @@ namespace SFM
             velocity = v;
         }
 
-        private void OnEnable() => AllAgents.Add(this);
+        private void OnEnable()
+        {
+            AllAgents.Add(this);
+            _spawnTime = Time.time;
+        }
 
         private void OnDisable()
         {
@@ -85,6 +93,7 @@ namespace SFM
 
         private Vector3 ComputeAgentRepulsion()
         {
+            var selfRamp = Mathf.Clamp01((Time.time - _spawnTime) / spawnWarmup);
             var force = Vector3.zero;
 
             foreach (var other in AllAgents)
@@ -113,7 +122,8 @@ namespace SFM
                     _ma.ReportCollision("Agent", other._ma.agentId);
                 }
 
-                force += repulsive;
+                var otherRamp = Mathf.Clamp01((Time.time - other._spawnTime) / spawnWarmup);
+                force += repulsive * Mathf.Min(selfRamp, otherRamp);
             }
 
             return force;
@@ -128,7 +138,8 @@ namespace SFM
             if (!_wallsCached)
             {
                 var walls = GameObject.FindGameObjectsWithTag("Wall");
-                _wallColliders = walls
+                var hazards = GameObject.FindGameObjectsWithTag("Hazard");
+                _wallColliders = walls.Concat(hazards)
                     .Select(w => w.GetComponent<Collider>())
                     .Where(c => c != null)
                     .ToArray();

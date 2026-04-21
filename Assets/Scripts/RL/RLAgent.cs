@@ -12,7 +12,7 @@ namespace RL
     public class RLAgent : Agent
     {
         [Header("Movement")]
-        public float relaxationTime = 0.3f;
+        public float maxRotation = 180f;
         [NonSerialized] public float Radius;
         [NonSerialized] public float MaxAgentSpeed;
 
@@ -20,14 +20,14 @@ namespace RL
         public Transform goal;
 
         [Header("Reward")]
-        public float goalReward = 3.0f;
+        public float goalReward = 8.0f;
         public float timeoutPenalty = -1.0f;
         public float timePenalty = -0.001f;
         public float wallCollisionPenalty = -0.01f;
-        public float agentCollisionPenalty = -0.1f;
+        public float agentCollisionPenalty = -0.5f;
         public float stagnationPenalty = -0.2f;
-        public float distanceRewardScale = 0.5f;
-        public float hazardContactPenalty = -3.0f;
+        public float distanceRewardScale = 0.15f;
+        public float hazardContactPenalty = -0.15f;
 
         [Header("Stagnation")]
         public int stagnationCheckSteps = 50;
@@ -38,7 +38,6 @@ namespace RL
 
         private MetricsAgent _metrics;
         private Vector3 _velocity;
-        private bool _wasInHazard;
         private float _prevDistToGoal;
         private Vector3 _stagnationCheckPos;
         private int _stepsSinceStagnationCheck;
@@ -72,7 +71,6 @@ namespace RL
         public override void OnEpisodeBegin()
         {
             _velocity = Vector3.zero;
-            _wasInHazard = false;
 
             if (trainingManager)
                 trainingManager.OnAgentEpisodeBegin(gameObject);
@@ -165,26 +163,32 @@ namespace RL
 
         public override void OnActionReceived(ActionBuffers actions)
         {
-            var vxAction = Mathf.Clamp(actions.ContinuousActions[0], -1f, 1f);
-            var vzAction = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
+            var forceAction = Mathf.Clamp(actions.ContinuousActions[0], -0.5f, 1f);
+            var rotationAction = Mathf.Clamp(actions.ContinuousActions[1], -1f, 1f);
 
-            var desiredVelocity = new Vector3(vxAction, 0f, vzAction) * MaxAgentSpeed;
-            if (desiredVelocity.magnitude > MaxAgentSpeed)
-                desiredVelocity = desiredVelocity.normalized * MaxAgentSpeed;
+            transform.Rotate(0f, rotationAction * maxRotation * Time.fixedDeltaTime, 0f);
 
-            _velocity = Vector3.Lerp(_velocity, desiredVelocity, Time.fixedDeltaTime / relaxationTime);
+            var force = transform.forward * (forceAction * AgentConfig.MaxForce);
+            _velocity += force / AgentConfig.Mass * Time.fixedDeltaTime;
+
+            if (_velocity.magnitude > MaxAgentSpeed)
+                _velocity = _velocity.normalized * MaxAgentSpeed;
+
+            _velocity *= 1f - 0.5f * Time.fixedDeltaTime;
+
+            var fwdSpeed = Vector3.Dot(_velocity, transform.forward);
+            var lateral = _velocity - transform.forward * fwdSpeed;
+            _velocity = transform.forward * fwdSpeed + lateral * 0.8f;
 
             transform.position += _velocity * Time.fixedDeltaTime;
-
-            if (_velocity.sqrMagnitude > 0.01f)
-                transform.rotation = Quaternion.LookRotation(_velocity);
 
             ResolveWallCollisions();
             ResolveAgentCollisions();
 
             if (_metrics.CheckExit(transform.position, deactivate: !trainingManager))
             {
-                AddReward(goalReward);
+                var atCorrectGoal = goal && Vector3.Distance(transform.position, goal.position) < 4f;
+                AddReward(atCorrectGoal ? goalReward : -goalReward);
                 if (trainingManager)
                     trainingManager.OnAgentEvacuated(gameObject);
                 return;
@@ -246,12 +250,8 @@ namespace RL
 
         private void RewardHazard()
         {
-            var inHazard = Physics.CheckSphere(transform.position, Radius, _hazardMask);
-
-            if (inHazard && !_wasInHazard)
+            if (Physics.CheckSphere(transform.position, Radius, _hazardMask))
                 AddReward(hazardContactPenalty);
-
-            _wasInHazard = inHazard;
         }
 
         private void CheckStagnation()
@@ -342,8 +342,8 @@ namespace RL
         public override void Heuristic(in ActionBuffers actionsOut)
         {
             var ca = actionsOut.ContinuousActions;
-            ca[0] = Input.GetAxis("Horizontal");
-            ca[1] = Input.GetAxis("Vertical");
+            ca[0] = Input.GetAxis("Vertical");
+            ca[1] = Input.GetAxis("Horizontal");
         }
     }
 }

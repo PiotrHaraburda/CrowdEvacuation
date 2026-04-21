@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Metrics
 {
     public enum ModelType { Ghost, SFM, RL }
-    public enum ScenarioId { NarrowDoor, Crossing90 }
+    public enum ScenarioId { NarrowDoor, Crossing90, Building }
 
     public class EvacuationMetricsLogger : MonoBehaviour
     {
@@ -16,7 +16,13 @@ namespace Metrics
         public ScenarioId scenarioId = ScenarioId.NarrowDoor;
         public string runSuffix = "";
 
-        private string EpisodeId => scenarioId == ScenarioId.NarrowDoor ? "LC_001" : "D_003";
+        private string EpisodeId => scenarioId switch
+        {
+            ScenarioId.NarrowDoor => "LC_001",
+            ScenarioId.Crossing90 => "D_003",
+            ScenarioId.Building => "Building",
+            _ => "Unknown"
+        };
 
         private string RunId => modelType == ModelType.Ghost
             ? EpisodeId
@@ -488,6 +494,8 @@ namespace Metrics
             sb.AppendLine($"scenario_id;{scenarioId}");
             sb.AppendLine($"run_id;{RunId}");
             sb.AppendLine($"total_agents;{totalAgents}");
+            sb.AppendLine($"evacuated_agents;{evacuatedAgents}");
+            sb.AppendLine($"evacuation_rate;{(totalAgents > 0 ? (float)evacuatedAgents / totalAgents : 0f):F4}");
             sb.AppendLine($"rset_100s;{rset100:F3}");
             sb.AppendLine($"rset_95s;{rset95:F3}");
             sb.AppendLine($"rset_90s;{rset90:F3}");
@@ -527,6 +535,7 @@ namespace Metrics
                 ScenarioId.NarrowDoor when pos.z < -1.1f => "ExitZone",
                 ScenarioId.Crossing90 when pos.z < -4.25f => "Exit_South",
                 ScenarioId.Crossing90 when pos.x < -4.75f => "Exit_West",
+                ScenarioId.Building when pos.x > 20f => "Exit_Main",
                 _ => null
             };
 

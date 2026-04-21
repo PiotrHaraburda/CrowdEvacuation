@@ -5,6 +5,7 @@ using Ghost;
 using Metrics;
 using UnityEngine;
 using Utility;
+using Random = UnityEngine.Random;
 
 namespace SFM
 {
@@ -42,6 +43,9 @@ namespace SFM
             public Transform Goal;
         }
 
+        [Header("Replication")]
+        public int runSeed;
+
         private readonly List<SocialForceAgent> _agents = new();
         private readonly List<PendingSpawn> _pending = new();
         private float _simStart;
@@ -49,6 +53,8 @@ namespace SFM
         private void Start()
         {
             _simStart = Time.time;
+            if (runSeed != 0) 
+                Random.InitState(runSeed);
             LoadEmpiricalSpawns();
         }
 

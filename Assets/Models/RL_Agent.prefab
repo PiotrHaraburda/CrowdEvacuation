@@ -181,9 +181,9 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: f980c666d0088d14695ceab783f3004c, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 33e4a22126205bd4c89fc626b4eb8142, type: 3}
   m_InferenceDevice: 0
-  m_BehaviorType: 2
+  m_BehaviorType: 0
   m_BehaviorName: Evacuation
   TeamId: 0
   m_UseChildSensors: 1
@@ -206,16 +206,16 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 15000
-  relaxationTime: 0.3
+  maxRotation: 180
   goal: {fileID: 0}
-  goalReward: 3
+  goalReward: 8
   timeoutPenalty: -1
   timePenalty: -0.001
   wallCollisionPenalty: -0.01
-  agentCollisionPenalty: -0.1
+  agentCollisionPenalty: -0.5
   stagnationPenalty: -0.2
-  distanceRewardScale: 0.5
-  hazardContactPenalty: -3
+  distanceRewardScale: 0.15
+  hazardContactPenalty: -0.15
   stagnationCheckSteps: 50
   stagnationThreshold: 0.1
   trainingManager: {fileID: 0}
@@ -250,8 +250,8 @@ MonoBehaviour:
   m_DetectableTags:
   - Wall
   - Agent
-  - Exit
   - Hazard
+  - Exit
   m_RaysPerDirection: 15
   m_MaxRayDegrees: 90
   m_SphereCastRadius: 0

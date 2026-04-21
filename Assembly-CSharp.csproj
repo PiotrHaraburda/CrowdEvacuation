@@ -52,6 +52,7 @@
     <Compile Include="Assets\Scripts\Ghost\GhostAgent.cs" />
     <Compile Include="Assets\Scripts\RL\TrainingEnvironmentManager.cs" />
     <Compile Include="Assets\Scripts\Utility\FreeLookCamera.cs" />
+    <Compile Include="Assets\Scripts\Building\WaypointFollower.cs" />
     <Compile Include="Assets\Scripts\RL\RLAgent.cs" />
     <Compile Include="Assets\Scripts\SFM\SocialForceAgent.cs" />
     <Compile Include="Assets\Scripts\Ghost\GhostPlaybackManager.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Assets\Scripts\Metrics\MetricsData.cs" />
     <Compile Include="Assets\Scripts\Metrics\EvacuationMetricsLogger.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Building\BuildingEvacuationManager.cs" />
     <Compile Include="Assets\Scripts\Metrics\MetricsAgent.cs" />
     <Compile Include="Assets\Scripts\Utility\AgentConfig.cs" />
     <Compile Include="Assets\Scripts\Ghost\TrajectoryData.cs" />
@@ -178,6 +180,7 @@
     <None Include="Assets\ML-Agents\Timers\01_ML_Agents_test_timers.json" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Toast.uss" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\DropZone.uss" />
+    <None Include="Assets\ML-Agents\Timers\Scene_Eval_Building_timers.json" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Canvas.uss" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\AppBar.uss" />
     <None Include="Library\PackageCache\com.unity.dt.app-ui@874541faca7e\PackageResources\Styles\Components\Quote.uss" />

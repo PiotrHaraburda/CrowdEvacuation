@@ -35,6 +35,7 @@ namespace Utility
             return SampleGaussian(MeanDesiredSpeed, StdDesiredSpeed, MinDesiredSpeed, MaxDesiredSpeed);
         }
 
+        // Box-Muller transform
         private static float SampleGaussian(float mean, float std, float min, float max)
         {
             var u1 = Random.value;

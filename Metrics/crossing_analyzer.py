@@ -15,8 +15,8 @@ C_RL = '#4CAF50'
 
 models = [
     ('Ghost', C_GHOST, 'D_003'),
-    ('SFM', C_SFM, 'D_003_SFM'),
-    ('RL', C_RL, 'D_003_RL'),
+    ('SFM', C_SFM, 'D_003_SFM_run3'),
+    ('RL', C_RL, 'D_003_RL_run3'),
 ]
 
 
@@ -47,8 +47,7 @@ gs = gridspec.GridSpec(6, 3, hspace=0.4, wspace=0.35)
 # (a) Evacuation Curve
 ax = fig.add_subplot(gs[0, 0])
 for name in data:
-    ax.plot(data[name]['ec']['time'], data[name]['ec']['evacuated_count'],
-            color=colors[name], linewidth=2, label=name)
+    ax.plot(data[name]['ec']['time'], data[name]['ec']['evacuated_count'], color=colors[name], linewidth=2, label=name)
 total = max(d['ec']['evacuated_count'].max() for d in data.values())
 ax.axhline(y=total * 0.5, color='gray', ls=':', alpha=0.5, label='50%')
 ax.axhline(y=total * 0.95, color='gray', ls='--', alpha=0.5, label='95%')
@@ -66,9 +65,8 @@ for name in data:
     tp = data[name]['tp'].sort_values('time')
     if len(tp) > 1:
         intervals = tp['time'].diff().dropna()
-        roll = intervals.rolling(window=10, center=True).mean()
-        ax.plot(tp['time'].iloc[1:], roll, color=colors[name], lw=1.2, alpha=0.8,
-                label=f'{name} (10-agent avg)')
+        roll = intervals.rolling(window=25, center=True).mean()
+        ax.plot(tp['time'].iloc[1:], roll, color=colors[name], lw=1.2, alpha=0.8, label=f'{name} (25-agent avg)')
 ax.set_xlabel('Time [s]')
 ax.set_ylabel('Inter-exit interval [s]')
 ax.set_title('(b) Time Between Exits')
@@ -108,8 +106,7 @@ for label, key, unit in metrics_show:
     table_data.append(row)
 
 col_labels = ['Metric'] + list(data.keys())
-table = ax.table(cellText=table_data, colLabels=col_labels, cellLoc='center', loc='center',
-                 colWidths=[0.30] + [0.22] * len(data))
+table = ax.table(cellText=table_data, colLabels=col_labels, cellLoc='center', loc='center', colWidths=[0.30] + [0.22] * len(data))
 table.auto_set_font_size(False)
 table.set_fontsize(7)
 table.scale(1, 1.3)
@@ -129,8 +126,7 @@ for name in data:
         fd_c['bin'] = pd.cut(fd_c['density'], bins)
         means = fd_c.groupby('bin', observed=False)['speed'].agg(['mean', 'std']).dropna()
         centers = [(b.left + b.right) / 2 for b in means.index]
-        ax.plot(centers, means['mean'].values, color=colors[name], lw=2.5,
-                marker='o', ms=3, label=name)
+        ax.plot(centers, means['mean'].values, color=colors[name], lw=2.5, marker='o', ms=3, label=name)
         ax.fill_between(centers, (means['mean'] - means['std']).values,
                         (means['mean'] + means['std']).values, color=colors[name], alpha=0.15)
 ax.set_xlabel('Local density [ped/m²]')
@@ -172,12 +168,12 @@ ax = fig.add_subplot(gs[2, 0])
 for name in data:
     sf = data[name]['sf']
     sf = sf[sf['specific_flow'] < 10]
-    w = max(1, len(sf) // 60)
+    w = max(1, len(sf) // 25)
     sm = sf['specific_flow'].rolling(window=w, center=True).mean()
     ax.fill_between(sf['time'], 0, sf['specific_flow'], color=colors[name], alpha=0.06)
     ax.plot(sf['time'], sm, color=colors[name], lw=1.2, label=name)
 ax.set_xlabel('Time [s]')
-ax.set_ylabel('Specific flow [ped/m/s]')
+ax.set_ylabel('Specific flow [ped/(m·s)]')
 ax.set_title('(g) Specific Flow at Exit')
 ax.legend(fontsize=7)
 ax.grid(True, alpha=0.3)
@@ -189,7 +185,7 @@ for name in data:
     af = data[name]['af']
     af = af[af['speed'] < 3]
     ts = af.groupby(af['time'].round(1))['speed'].mean()
-    w = max(1, len(ts) // 40)
+    w = max(1, len(ts) // 20)
     sm = ts.rolling(window=w, center=True).mean()
     ax.plot(sm.index, sm.values, color=colors[name], lw=1.5, label=name)
 ax.set_xlabel('Time [s]')
@@ -234,8 +230,7 @@ def make_heatmap(ax, df, title, vmin, vmax):
 vmax = max(d['hm'].groupby(['grid_x', 'grid_z'])['density'].mean().max() for d in data.values())
 hm_pvs = {}
 for i, name in enumerate(data):
-    hm_pvs[name] = make_heatmap(fig.add_subplot(gs[3, i]), data[name]['hm'],
-                                 f'({chr(106 + i)}) Density - {name}', 0, vmax)
+    hm_pvs[name] = make_heatmap(fig.add_subplot(gs[3, i]), data[name]['hm'], f'({chr(106 + i)}) Density - {name}', 0, vmax)
 
 # (m,n) Heatmap differences
 ax = fig.add_subplot(gs[4, 0])
@@ -300,15 +295,13 @@ for name in data:
         fd_c['bin'] = pd.cut(fd_c['density'], bins)
         means = fd_c.groupby('bin', observed=False)['flow'].mean().dropna()
         centers = [(b.left + b.right) / 2 for b in means.index]
-        ax.plot(centers, means.values, color=colors[name], lw=2.5,
-                marker='o', ms=3, label=f'{name} (mean)')
+        ax.plot(centers, means.values, color=colors[name], lw=2.5, marker='o', ms=3, label=f'{name} (mean)')
 ax.set_xlabel('Local density [ped/m²]')
-ax.set_ylabel('Flow [ped/m²/s]')
-ax.set_title('(p) Flow–Density J(ρ)')
+ax.set_ylabel('Specific flow [ped/(m·s)]')
+ax.set_title('(p) Flow–Density Js(ρ)')
 ax.legend(fontsize=8)
 ax.grid(True, alpha=0.3)
 
-plt.suptitle('Crossing90 D_003 (entrance 1.2m) - Ghost vs SFM vs RL',
-             fontsize=14, fontweight='bold', y=1.0)
+plt.suptitle('Crossing90 D_003 (entrance 1.2m) - Ghost vs SFM vs RL', fontsize=14, fontweight='bold', y=1.0)
 plt.savefig('./Charts/crossing90_d003_comparison.png', dpi=150, bbox_inches='tight')
 print("\nDone")

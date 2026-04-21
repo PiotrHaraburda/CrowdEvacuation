@@ -73,11 +73,9 @@ namespace RL
             {
                 _nextCurriculumCheck = Time.time + 30f;
                 var envParams = Academy.Instance.EnvironmentParameters;
-                var newNumAgents = Mathf.RoundToInt(
-                    envParams.GetWithDefault("num_agents", defaultNumAgents));
                 var newThreat = envParams.GetWithDefault("threat_active", 0f) > 0.5f;
 
-                if (Mathf.Abs(newNumAgents - _numAgents) > 3 || newThreat != _threatActive)
+                if (newThreat != _threatActive)
                     _pendingFullReset = true;
             }
 
