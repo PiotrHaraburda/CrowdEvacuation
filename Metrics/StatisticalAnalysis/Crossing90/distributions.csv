@@ -1,0 +1,3 @@
+distribution;n_SFM;n_RL;n_Ghost;SFM_mean;SFM_sd;RL_mean;RL_sd;SFMvsRL_KS_D;SFMvsRL_KS_p;SFMvsRL_W1;SFMvsGhost_KS_D;SFMvsGhost_KS_p;RLvsGhost_KS_D;RLvsGhost_KS_p
+headway_dist;79337;60310;3491;0,571;0,1391;0,6093;0,2138;0,1599;0;0,0656;0,1672;0;0,0924;0
+agent_speed;181291;137618;7992;1,1253;0,3093;1,1277;0,4209;0,0889;0;0,0918;0,1996;0;0,2368;0

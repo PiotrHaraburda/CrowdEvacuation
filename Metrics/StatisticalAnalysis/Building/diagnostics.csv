@@ -1,0 +1,3 @@
+metric;SFM_mean;SFM_sd;RL_mean;RL_sd;RL_to_SFM_ratio
+collisions_agent_agent;2,35;3,2971;357;497,4413;151,9149
+collisions_agent_wall;79,95;35,9246;605,95;1033,6114;7,5791
