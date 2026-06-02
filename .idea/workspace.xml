@@ -5,13 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84eea257-372f-4676-b074-99441a65da73" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_Building_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_Building_timers.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_Crossing_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_Crossing_timers.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_NarrowDoor_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Eval_NarrowDoor_timers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Training_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Scene_Training_timers.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Building.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Building.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_Crossing.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Scene_Eval_NarrowDoor.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CrowdEvacuation.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/CrowdEvacuation.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/Building/fd_and_curves.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/Building/fd_and_curves.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/Building/scalar.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/Building/scalar.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/Crossing90/distributions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/Crossing90/distributions.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/Crossing90/scalar.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/Crossing90/scalar.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/NarrowDoor/diagnostics.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/NarrowDoor/diagnostics.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/NarrowDoor/distributions.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/NarrowDoor/distributions.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/NarrowDoor/scalar.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/StatisticalAnalysis/NarrowDoor/scalar.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Metrics/statistical_validation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Metrics/statistical_validation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Trajectories/data_processed/narrow_door/LC_001.json" beforeDir="false" afterPath="$PROJECT_DIR$/Trajectories/data_processed/narrow_door/LC_001.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/CurrentMaximizeLayout.dwlt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/Layouts/default-6000.dwlt" afterDir="false" />

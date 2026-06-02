@@ -26,6 +26,14 @@ DIAGNOSTIC_METRICS = ["collisions_agent_agent", "collisions_agent_wall"]
 N_RUNS = 20
 
 
+def _fmt(v):
+    if pd.isna(v):
+        return ""
+    if v != 0 and abs(v) < 1e-4:
+        return f"{v:.2e}".replace(".", ",")
+    return f"{v:.4f}".replace(".", ",")
+
+
 def load_summary(folder):
     df = pd.read_csv(folder / "summary.csv", sep=";", decimal=",")
     df["value"] = pd.to_numeric(df["value"].astype(str).str.replace(",", "."), errors="coerce")
@@ -210,7 +218,7 @@ def process(scen, folder, prefix, has_ghost, out_dir):
     scen_dir.mkdir(parents=True, exist_ok=True)
     for df, name in [(scalar_df, "scalar"), (diag_df, "diagnostics"),
                      (dist_df, "distributions"), (fd_curves_df, "fd_and_curves")]:
-        df.to_csv(scen_dir / f"{name}.csv", sep=";", decimal=",", index=False, float_format="%.4f")
+        df.to_csv(scen_dir / f"{name}.csv", sep=";", index=False, float_format=_fmt)
 
     print(f"  saved here: {scen_dir}")
     print("\n  Scalars:")

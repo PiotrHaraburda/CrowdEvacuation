@@ -3089,7 +3089,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3938a3a68b5051346852cde30fd10e10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: 0
+  modelType: 1
   sfmPrefab: {fileID: 793577169775243660, guid: 579bf81a64004614fbae60dfc4ab10b8, type: 3}
   rlPrefab: {fileID: 793577169775243660, guid: 110453db64a580f45accc4de399cfe08, type: 3}
   metricsLogger: {fileID: 795873071}
@@ -3789,9 +3789,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6341b28d9c34a958cd95eb910b24909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: 1
+  modelType: 2
   scenarioId: 2
-  runSuffix: run20
+  runSuffix: test
   outputDirectory: Metrics
   densityMeasurementRadius: 1.5
   exitMeasurementPoint: {fileID: 769551904}

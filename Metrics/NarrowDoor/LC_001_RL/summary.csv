@@ -4,11 +4,11 @@ scenario_id;NarrowDoor
 run_id;LC_001_RL
 total_agents;93
 evacuated_agents;93
-evacuation_rate;1,0000
-rset_100s;38,840
-rset_95s;36,320
-rset_90s;33,480
-rset_50s;19,180
+evacuation_rate;1
+rset_100s;38,84
+rset_95s;36,32
+rset_90s;33,48
+rset_50s;19,18
 mean_speed_ms;0,3104
 std_speed_ms;0,2812
 max_speed_ms;1,9871
@@ -23,4 +23,4 @@ collisions_agent_agent;14221
 collisions_agent_wall;1148
 mean_headway_m;0,3932
 min_headway_m;0,3221
-std_headway_m;0,0610
+std_headway_m;0,061
